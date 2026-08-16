@@ -1,69 +1,162 @@
+import { PROJECTS } from "@/lib/projects-static";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <main className="min-h-screen bg-[#000000]">
+      <Nav />
+      <Hero />
+      <ProjectList />
+      <Footer />
+    </main>
+  );
+}
+
+function Nav() {
+  return (
+    <header className="fixed top-0 left-0 right-0 z-50 px-6 py-5 flex items-center justify-between">
+      <span className="text-[#f0e7e4] text-sm font-medium tracking-[0.08em] uppercase">
+        Francisco Neto
+      </span>
+      <nav className="flex gap-6">
+        <Link
+          href="/work"
+          className="text-[#6b6560] text-sm hover:text-[#f0e7e4] transition-colors duration-200"
+        >
+          Work
+        </Link>
+        <Link
+          href="/about"
+          className="text-[#6b6560] text-sm hover:text-[#f0e7e4] transition-colors duration-200"
+        >
+          About
+        </Link>
+      </nav>
+    </header>
+  );
+}
+
+function Hero() {
+  return (
+    <section className="min-h-screen flex flex-col justify-end px-6 pb-16 pt-32 max-w-4xl">
+      <div className="mb-12">
+        <p className="text-[#433e3c] text-xs tracking-[0.2em] uppercase mb-6">
+          Product Designer
+        </p>
+        <h1 className="text-[#f0e7e4] text-4xl sm:text-5xl lg:text-6xl font-medium leading-[1.1] tracking-tight max-w-2xl">
+          Francisco Neto
+        </h1>
+        <p className="text-[#6b6560] text-lg mt-6 max-w-xl leading-relaxed">
+          Six years designing digital products at Havan — the largest retail
+          chain in the South of Brazil. I work at the intersection of research,
+          business, and interface craft.
+        </p>
+      </div>
+
+      <div className="flex items-center gap-2 text-[#433e3c] text-sm">
+        <span>Scroll</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path
+            d="M8 3v10M4 9l4 4 4-4"
+            stroke="currentColor"
+            strokeWidth="1.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
+    </section>
+  );
+}
+
+function ProjectList() {
+  return (
+    <section className="px-6 pb-32">
+      <div className="max-w-4xl">
+        {PROJECTS.map((project, index) => (
+          <ProjectEntry key={project.slug} project={project} index={index} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+type Project = (typeof PROJECTS)[number];
+
+function ProjectEntry({
+  project,
+  index,
+}: {
+  project: Project;
+  index: number;
+}) {
+  return (
+    <Link
+      href={`/work/${project.slug}`}
+      className="group block border-t border-[#1a1a1a] py-10 sm:py-14 hover:border-[#433e3c] transition-colors duration-300"
+    >
+      <div className="flex flex-col sm:flex-row gap-8 sm:gap-12 items-start">
+        {/* Left column */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-3 mb-5">
+            <span
+              className="text-[10px] font-semibold tracking-[0.2em] uppercase"
+              style={{ color: project.accentColor }}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+              {project.label}
+            </span>
+            <span className="text-[#333333] text-xs">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+          </div>
+
+          <h2 className="text-[#f0e7e4] text-xl sm:text-2xl font-medium leading-snug mb-3 group-hover:text-white transition-colors duration-200">
+            {project.title}
+          </h2>
+
+          <p className="text-[#6b6560] text-sm leading-relaxed max-w-sm">
+            {project.description}
           </p>
+
+          <div className="flex items-center gap-4 mt-6 text-xs text-[#433e3c]">
+            <span>{project.role}</span>
+            <span>—</span>
+            <span>{project.date}</span>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+
+        {/* Thumbnail */}
+        <div className="w-full sm:w-52 shrink-0 overflow-hidden rounded-sm bg-[#111111]">
+          <div className="relative aspect-[4/3] w-full">
             <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+              src={project.thumbnailUrl}
+              alt={project.thumbnailAlt}
+              fill
+              className="object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-300"
+              sizes="(max-width: 640px) 100vw, 208px"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </Link>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="border-t border-[#1a1a1a] px-6 py-8">
+      <div className="max-w-4xl flex items-center justify-between">
+        <span className="text-[#433e3c] text-xs">
+          Francisco Neto — Brusque, SC, Brazil
+        </span>
+        <a
+          href="mailto:vieiraalencar.neto@gmail.com"
+          className="text-[#433e3c] text-xs hover:text-[#f0e7e4] transition-colors duration-200"
+        >
+          vieiraalencar.neto@gmail.com
+        </a>
+      </div>
+    </footer>
   );
 }
