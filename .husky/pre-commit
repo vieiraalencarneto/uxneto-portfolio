@@ -1,0 +1,2 @@
+npx biome check --write --unsafe $(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(ts|tsx|js|jsx)$' | tr '\n' ' ')
+git add -u
