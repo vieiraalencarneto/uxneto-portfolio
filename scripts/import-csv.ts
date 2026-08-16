@@ -13,7 +13,6 @@ import { createClient } from "@supabase/supabase-js";
 import { parse } from "csv-parse/sync";
 import { readFileSync } from "fs";
 import { resolve } from "path";
-import type { Database } from "../src/types/database";
 import { sanitizeHtml } from "../src/lib/sanitize";
 
 const DRY_RUN = process.argv.includes("--dry-run");
@@ -69,7 +68,8 @@ async function main() {
     );
   }
 
-  const supabase = createClient<Database>(supabaseUrl, serviceRoleKey);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = createClient(supabaseUrl, serviceRoleKey) as any;
 
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
