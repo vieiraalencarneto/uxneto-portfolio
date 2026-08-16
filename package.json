@@ -18,6 +18,8 @@
     "import:csv": "tsx scripts/import-csv.ts",
     "import:csv:dry": "tsx scripts/import-csv.ts --dry-run",
     "generate:content": "tsx scripts/generate-static-content.ts",
+    "migrate:images": "node --env-file=.env.local node_modules/.bin/tsx scripts/migrate-images.ts",
+    "migrate:images:dry": "node --env-file=.env.local node_modules/.bin/tsx scripts/migrate-images.ts --dry-run",
     "prepare": "husky"
   },
   "dependencies": {
