@@ -2,9 +2,17 @@ import { PROJECTS } from "@/lib/projects-static";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { readFileSync, existsSync } from "fs";
+import { join } from "path";
 import type { Metadata } from "next";
 
 type Props = PageProps<"/work/[slug]">;
+
+function getContentHtml(slug: string): string | null {
+  const contentPath = join(process.cwd(), "src/content", `${slug}.html`);
+  if (!existsSync(contentPath)) return null;
+  return readFileSync(contentPath, "utf-8");
+}
 
 export async function generateStaticParams() {
   return PROJECTS.map((p) => ({ slug: p.slug }));
@@ -31,6 +39,8 @@ export default async function CaseStudyPage({ params }: Props) {
   const project = PROJECTS.find((p) => p.slug === slug);
 
   if (!project) notFound();
+
+  const contentHtml = getContentHtml(slug);
 
   return (
     <main className="min-h-screen bg-[#000000]">
@@ -89,19 +99,22 @@ export default async function CaseStudyPage({ params }: Props) {
         </div>
       )}
 
-      {/* Content placeholder — will be replaced with DB content after Supabase is set up */}
+      {/* Case study content */}
       <div className="px-6 pb-32 max-w-3xl mx-auto">
-        <div className="border border-[#1a1a1a] rounded-sm p-8 text-center">
-          <p className="text-[#433e3c] text-sm">
-            Full case study content will be available after Supabase is
-            connected.
-          </p>
-          <p className="text-[#2b2b2b] text-xs mt-2">
-            Run{" "}
-            <code className="font-mono text-[#433e3c]">npm run import:csv</code>{" "}
-            once Supabase env vars are configured.
-          </p>
-        </div>
+        {contentHtml ? (
+          <article
+            className="prose"
+            dangerouslySetInnerHTML={{ __html: contentHtml }}
+          />
+        ) : (
+          <div className="border border-[#1a1a1a] rounded-sm p-8 text-center">
+            <p className="text-[#433e3c] text-sm">
+              Run{" "}
+              <code className="font-mono">npm run generate:content</code> to
+              generate static case study content.
+            </p>
+          </div>
+        )}
       </div>
 
       <footer className="border-t border-[#1a1a1a] px-6 py-8">
