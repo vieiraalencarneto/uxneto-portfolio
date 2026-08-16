@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { LogoMark } from "@/components/Logo";
 
 type Props = PageProps<"/work/[slug]">;
 
@@ -67,46 +68,45 @@ export default async function CaseStudyPage({ params }: Props) {
   const accentColor = ACCENT_COLORS[slug] ?? "#fde440";
 
   return (
-    <main className="min-h-screen bg-[#000000]">
-      <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-5 flex items-center justify-between">
+    <main className="min-h-screen bg-[var(--background)]">
+      <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-5 flex items-center justify-between bg-[var(--background)]/90 backdrop-blur-md border-b border-[var(--border)]">
         <Link
           href="/"
-          className="text-[#433e3c] text-sm hover:text-[#f0e7e4] transition-colors duration-200"
+          className="text-[var(--foreground)] hover:text-black transition-colors"
+          aria-label="Home"
         >
-          Francisco Neto
+          <LogoMark className="h-11 w-auto shrink-0" />
         </Link>
         <Link
           href="/"
-          className="text-[#433e3c] text-sm hover:text-[#f0e7e4] transition-colors duration-200"
+          className="text-[var(--muted)] text-sm hover:text-[var(--foreground)] transition-colors duration-200"
         >
           Back
         </Link>
       </nav>
 
       <header className="pt-32 pb-12 px-6 max-w-3xl mx-auto">
-        <p
-          className="text-[10px] font-semibold tracking-[0.2em] uppercase mb-6"
-          style={{ color: accentColor }}
-        >
+        <div className="h-[2px] w-10 mb-6" style={{ backgroundColor: accentColor }} />
+        <p className="text-[10px] font-semibold tracking-[0.2em] uppercase mb-4 text-[var(--coffee-bean)]">
           {project.label ?? "Case Study"}
         </p>
 
-        <h1 className="text-[#f0e7e4] text-3xl sm:text-4xl font-medium leading-tight mb-6">
+        <h1 className="font-serif text-3xl sm:text-4xl leading-tight text-[var(--foreground)] mb-6">
           {project.title}
         </h1>
 
-        <p className="text-[#6b6560] text-lg leading-relaxed mb-10">{project.description}</p>
+        <p className="text-[var(--muted)] text-lg leading-relaxed mb-10">{project.description}</p>
 
-        <div className="flex items-center gap-6 text-xs text-[#433e3c] border-t border-[#1a1a1a] pt-6">
+        <div className="flex items-center gap-6 text-xs text-[var(--coffee-bean)] border-t border-[var(--border)] pt-6">
           {project.role && <span>{project.role}</span>}
-          {project.role && project.date && <span className="text-[#222]">—</span>}
+          {project.role && project.date && <span className="text-[var(--border)]">—</span>}
           {project.date && <span>{project.date}</span>}
         </div>
       </header>
 
       {project.thumbnail_url && (
         <div className="px-6 mb-16 max-w-3xl mx-auto">
-          <div className="relative aspect-[16/9] w-full overflow-hidden rounded-sm bg-[#111]">
+          <div className="relative aspect-[16/9] w-full overflow-hidden bg-[var(--border)]">
             <Image
               src={project.thumbnail_url}
               alt={project.thumbnail_alt ?? project.title}
@@ -123,18 +123,21 @@ export default async function CaseStudyPage({ params }: Props) {
         {project.content_html ? (
           <article className="prose" dangerouslySetInnerHTML={{ __html: project.content_html }} />
         ) : (
-          <div className="border border-[#1a1a1a] rounded-sm p-8 text-center">
-            <p className="text-[#433e3c] text-sm">Conteudo nao disponivel.</p>
+          <div className="border border-[var(--border)] p-8 text-center">
+            <p className="text-[var(--muted)] text-sm">Conteudo nao disponivel.</p>
           </div>
         )}
       </div>
 
-      <footer className="border-t border-[#1a1a1a] px-6 py-8">
+      <footer className="border-t border-[var(--border)] px-6 py-8">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
-          <Link href="/" className="text-[#433e3c] text-xs hover:text-[#f0e7e4] transition-colors">
+          <Link
+            href="/"
+            className="text-[var(--muted)] text-xs hover:text-[var(--foreground)] transition-colors"
+          >
             All work
           </Link>
-          <span className="text-[#433e3c] text-xs">Francisco Neto — Brusque, SC</span>
+          <span className="text-[var(--muted)] text-xs">Francisco Neto — Brusque, SC</span>
         </div>
       </footer>
     </main>

@@ -17,12 +17,16 @@ export interface Database {
           responsibilities: string | null;
           conclusion: string | null;
           content_html: string | null;
+          accent_color: string | null;
           published: boolean;
           sort_order: number;
           created_at: string;
           updated_at: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["projects"]["Row"], "id" | "created_at" | "updated_at">;
+        Insert: Omit<
+          Database["public"]["Tables"]["projects"]["Row"],
+          "id" | "created_at" | "updated_at"
+        >;
         Update: Partial<Database["public"]["Tables"]["projects"]["Insert"]>;
       };
       project_sections: {
@@ -60,6 +64,26 @@ export interface Database {
         };
         Insert: Omit<Database["public"]["Tables"]["migration_logs"]["Row"], "id" | "imported_at">;
         Update: Partial<Database["public"]["Tables"]["migration_logs"]["Insert"]>;
+      };
+      login_attempts: {
+        Row: {
+          id: string;
+          identifier: string;
+          success: boolean;
+          attempted_at: string;
+        };
+        Insert: Omit<Database["public"]["Tables"]["login_attempts"]["Row"], "id" | "attempted_at">;
+        Update: Partial<Database["public"]["Tables"]["login_attempts"]["Insert"]>;
+      };
+      site_settings: {
+        Row: {
+          id: string;
+          key: string;
+          value: string | null;
+          updated_at: string;
+        };
+        Insert: Omit<Database["public"]["Tables"]["site_settings"]["Row"], "id" | "updated_at">;
+        Update: Partial<Database["public"]["Tables"]["site_settings"]["Insert"]>;
       };
     };
     Views: Record<string, never>;

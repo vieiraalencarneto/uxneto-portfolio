@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { DM_Serif_Display, Geist, Geist_Mono } from "next/font/google";
 import { PostHogProvider } from "@/components/PostHogProvider";
 import "./globals.css";
 
@@ -12,6 +12,13 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const dmSerifDisplay = DM_Serif_Display({
+  variable: "--font-dm-serif",
+  subsets: ["latin"],
+  weight: "400",
   display: "swap",
 });
 
@@ -36,7 +43,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} ${dmSerifDisplay.variable}`}
+    >
       <body className="min-h-screen flex flex-col">
         <PostHogProvider>{children}</PostHogProvider>
       </body>
