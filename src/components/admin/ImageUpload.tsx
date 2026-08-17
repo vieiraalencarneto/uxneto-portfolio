@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 
 interface Props {
   value: string;
@@ -19,21 +19,26 @@ export function ImageUpload({
   bucket = "portfolio",
 }: Props) {
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const inputId = useId();
 
   async function handleFile(file: File) {
     setUploading(true);
+    setUploadError("");
     try {
       const form = new FormData();
       form.append("file", file);
       form.append("bucket", bucket);
       const res = await fetch("/api/admin/upload", { method: "POST", body: form });
+      const data = await res.json();
       if (!res.ok) {
-        alert("Upload failed");
+        setUploadError(data.error || "Upload failed");
         return;
       }
-      const { url } = await res.json();
-      onChange(url);
+      onChange(data.url);
+    } catch {
+      setUploadError("Connection error. Try again.");
     } finally {
       setUploading(false);
     }
@@ -42,7 +47,7 @@ export function ImageUpload({
   return (
     <div>
       <label
-        htmlFor="image-upload-input"
+        htmlFor={inputId}
         className="block text-[10px] font-semibold tracking-[0.15em] uppercase text-[var(--muted)] mb-1.5"
       >
         {label}
@@ -64,7 +69,7 @@ export function ImageUpload({
           </div>
         ) : (
           <p className="text-[var(--muted)] text-xs">
-            {uploading ? "Uploading..." : "Click or drag image here"}
+            {uploading ? "Uploading..." : "Click or drag file here"}
           </p>
         )}
         {value && (
@@ -73,6 +78,11 @@ export function ImageUpload({
           </p>
         )}
       </button>
+      {uploadError && (
+        <p className="mt-1.5 text-[10px] text-[var(--ember-red)] border border-[var(--ember-red)]/30 bg-[var(--ember-red)]/5 px-2 py-1.5">
+          {uploadError}
+        </p>
+      )}
       {value && (
         <div className="mt-1.5 flex gap-2 items-center">
           <input
@@ -101,7 +111,7 @@ export function ImageUpload({
       )}
       <input
         ref={inputRef}
-        id="image-upload-input"
+        id={inputId}
         type="file"
         accept={accept}
         className="hidden"

@@ -48,7 +48,7 @@ function Nav() {
             Contact
           </a>
           <a
-            href="/resume.pdf"
+            href="/api/resume"
             className="hidden sm:block text-[var(--muted)] text-xs uppercase tracking-[0.12em] hover:text-[var(--foreground)] transition-colors duration-200"
           >
             Resume
@@ -141,7 +141,7 @@ function Hero() {
                 href: "https://www.linkedin.com/in/netoalencar/",
                 external: true,
               },
-              { label: "Resume", href: "/resume.pdf", external: false },
+              { label: "Resume", href: "/api/resume", external: false },
             ].map(({ label, href, external }) => (
               <a
                 key={label}

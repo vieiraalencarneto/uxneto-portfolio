@@ -66,7 +66,9 @@ function Nav({ t, locale }: { t: ReturnType<typeof getT>; locale: string }) {
               {t.nav.contact}
             </a>
             <a
-              href="/resume.pdf"
+              href="/api/resume"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hidden sm:block text-[var(--muted)] text-xs uppercase tracking-[0.12em] hover:text-[var(--foreground)] transition-colors duration-200"
             >
               {t.nav.resume}
@@ -167,7 +169,7 @@ function Hero({
                 href: "https://www.linkedin.com/in/netoalencar/",
                 external: true,
               },
-              { label: t.nav.resume, href: "/resume.pdf", external: false },
+              { label: t.nav.resume, href: "/api/resume", external: true },
             ].map(({ label, href, external }) => (
               <a
                 key={label}
