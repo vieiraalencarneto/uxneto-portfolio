@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { CountUpNumber } from "@/components/CountUpNumber";
 import { LogoMark } from "@/components/Logo";
 import { localizeProject, PROJECTS } from "@/lib/projects-static";
 
@@ -182,7 +183,7 @@ function Hero() {
               <div className="flex flex-col gap-4">
                 <div>
                   <p className="font-serif text-2xl leading-none text-[var(--foreground)] mb-0.5">
-                    42%
+                    <CountUpNumber value={42} suffix="%" delay={0} />
                   </p>
                   <p className="text-[10px] text-[var(--muted)] leading-tight">
                     revenue growth
@@ -192,7 +193,7 @@ function Hero() {
                 </div>
                 <div>
                   <p className="font-serif text-2xl leading-none text-[var(--foreground)] mb-0.5">
-                    +79.5%
+                    <CountUpNumber value={79.5} prefix="+" suffix="%" decimals={1} delay={120} />
                   </p>
                   <p className="text-[10px] text-[var(--muted)] leading-tight">
                     more sign-ups
@@ -202,7 +203,7 @@ function Hero() {
                 </div>
                 <div>
                   <p className="font-serif text-2xl leading-none text-[var(--foreground)] mb-0.5">
-                    6 yrs
+                    <CountUpNumber value={6} suffix=" yrs" delay={240} />
                   </p>
                   <p className="text-[10px] text-[var(--muted)] leading-tight">
                     B2B & B2C

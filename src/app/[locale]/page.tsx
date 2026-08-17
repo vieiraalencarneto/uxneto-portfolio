@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CountUpNumber } from "@/components/CountUpNumber";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { LogoMark } from "@/components/Logo";
 import { getT, isLocale } from "@/lib/i18n";
@@ -209,7 +210,7 @@ function Hero({
               <div className="flex flex-col gap-4">
                 <div>
                   <p className="font-serif text-2xl leading-none text-[var(--foreground)] mb-0.5">
-                    42%
+                    <CountUpNumber value={42} suffix="%" delay={0} />
                   </p>
                   <p className="text-[10px] text-[var(--muted)] leading-tight whitespace-pre-line">
                     {t.hero.revenueGrowth}
@@ -217,7 +218,7 @@ function Hero({
                 </div>
                 <div>
                   <p className="font-serif text-2xl leading-none text-[var(--foreground)] mb-0.5">
-                    +79.5%
+                    <CountUpNumber value={79.5} prefix="+" suffix="%" decimals={1} delay={120} />
                   </p>
                   <p className="text-[10px] text-[var(--muted)] leading-tight whitespace-pre-line">
                     {t.hero.moreSignups}
@@ -225,7 +226,7 @@ function Hero({
                 </div>
                 <div>
                   <p className="font-serif text-2xl leading-none text-[var(--foreground)] mb-0.5">
-                    6 yrs
+                    <CountUpNumber value={6} suffix=" yrs" delay={240} />
                   </p>
                   <p className="text-[10px] text-[var(--muted)] leading-tight whitespace-pre-line">
                     {t.hero.yearsExp}
