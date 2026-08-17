@@ -7,7 +7,6 @@ import { LogoMark } from "@/components/Logo";
 export default function AdminLogin() {
   const router = useRouter();
   const [email, setEmail] = useState("");
-  const [cpf, setCpf] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -37,14 +36,6 @@ export default function AdminLogin() {
     [],
   );
 
-  function formatCpf(value: string) {
-    const digits = value.replace(/\D/g, "").slice(0, 11);
-    return digits
-      .replace(/(\d{3})(\d)/, "$1.$2")
-      .replace(/(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
-      .replace(/(\d{3})\.(\d{3})\.(\d{3})(\d)/, "$1.$2.$3-$4");
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (locked) return;
@@ -56,7 +47,7 @@ export default function AdminLogin() {
       const res = await fetch("/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, cpf, password }),
+        body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
 
@@ -106,26 +97,6 @@ export default function AdminLogin() {
               disabled={locked || loading}
               className="w-full border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--foreground)] transition-colors disabled:opacity-50"
               placeholder="your@email.com"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="login-cpf"
-              className="block text-[10px] font-semibold tracking-[0.15em] uppercase text-[var(--muted)] mb-1.5"
-            >
-              CPF
-            </label>
-            <input
-              id="login-cpf"
-              type="text"
-              value={cpf}
-              onChange={(e) => setCpf(formatCpf(e.target.value))}
-              required
-              disabled={locked || loading}
-              inputMode="numeric"
-              placeholder="000.000.000-00"
-              className="w-full border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--foreground)] transition-colors disabled:opacity-50"
             />
           </div>
 
