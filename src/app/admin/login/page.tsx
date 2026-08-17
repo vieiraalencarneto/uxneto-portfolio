@@ -1,11 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LogoMark } from "@/components/Logo";
 
 export default function AdminLogin() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -55,8 +53,7 @@ export default function AdminLogin() {
         setError(data.error || "Invalid credentials.");
         if (data.locked) startLockout();
       } else {
-        router.push("/admin");
-        router.refresh();
+        window.location.href = "/admin";
       }
     } catch {
       setError("Connection error. Try again.");
