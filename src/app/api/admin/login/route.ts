@@ -1,11 +1,10 @@
 import { type CookieOptions, createServerClient } from "@supabase/ssr";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
-import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-const MAX_ATTEMPTS = 3;
+const MAX_ATTEMPTS = 5;
 const LOCKOUT_MINUTES = 5;
 
 function serviceClient() {
@@ -32,10 +31,10 @@ async function recordAttempt(email: string, success: boolean) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, cpf, password } = await request.json();
+    const { email, password } = await request.json();
 
-    if (!email || !cpf || !password) {
-      return NextResponse.json({ error: "All fields are required." }, { status: 400 });
+    if (!email || !password) {
+      return NextResponse.json({ error: "Email and password are required." }, { status: 400 });
     }
 
     // Rate limit check
@@ -47,25 +46,6 @@ export async function POST(request: NextRequest) {
           locked: true,
         },
         { status: 429 },
-      );
-    }
-
-    // CPF verification (server-side only, never logged)
-    const cpfClean = cpf.replace(/\D/g, "");
-    const cpfHash = process.env.ADMIN_CPF_HASH;
-    if (!cpfHash) {
-      return NextResponse.json({ error: "Admin not configured." }, { status: 500 });
-    }
-    const cpfValid = await bcrypt.compare(cpfClean, cpfHash);
-
-    if (!cpfValid) {
-      await recordAttempt(email, false);
-      const remaining = MAX_ATTEMPTS - failures - 1;
-      return NextResponse.json(
-        {
-          error: `Invalid credentials. ${remaining} attempt${remaining !== 1 ? "s" : ""} remaining.`,
-        },
-        { status: 401 },
       );
     }
 
