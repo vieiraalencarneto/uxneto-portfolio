@@ -22,6 +22,7 @@ export const en = {
     revenueGrowth: "revenue growth\nGift List",
     moreSignups: "more sign-ups\norganic traffic",
     yearsExp: "B2B & B2C\nsolutions",
+    yearsSuffix: " yrs",
     skills: "Skills",
     featured: "Featured",
     selectedWork: "Selected Work",
