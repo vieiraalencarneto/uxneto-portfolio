@@ -15,18 +15,26 @@ function serviceClient() {
 }
 
 async function getRecentFailures(email: string): Promise<number> {
-  const since = new Date(Date.now() - LOCKOUT_MINUTES * 60 * 1000).toISOString();
-  const { count } = await serviceClient()
-    .from("login_attempts")
-    .select("*", { count: "exact", head: true })
-    .eq("identifier", email)
-    .eq("success", false)
-    .gte("attempted_at", since);
-  return count ?? 0;
+  try {
+    const since = new Date(Date.now() - LOCKOUT_MINUTES * 60 * 1000).toISOString();
+    const { count } = await serviceClient()
+      .from("login_attempts")
+      .select("*", { count: "exact", head: true })
+      .eq("identifier", email)
+      .eq("success", false)
+      .gte("attempted_at", since);
+    return count ?? 0;
+  } catch {
+    return 0;
+  }
 }
 
 async function recordAttempt(email: string, success: boolean) {
-  await serviceClient().from("login_attempts").insert({ identifier: email, success });
+  try {
+    await serviceClient().from("login_attempts").insert({ identifier: email, success });
+  } catch {
+    // non-critical
+  }
 }
 
 export async function POST(request: NextRequest) {
