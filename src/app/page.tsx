@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { LogoMark } from "@/components/Logo";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import { PROJECTS } from "@/lib/projects-static";
 
 export default function Home() {
@@ -75,13 +76,19 @@ function Hero() {
   return (
     <section className="pt-20 pb-0 px-6 sm:px-8 max-w-5xl mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-10 lg:gap-14 items-start pt-12">
-        {/* Left column */}
+        {/* Left column — staggered fade-up per element */}
         <div>
-          <p className="text-[var(--muted)] text-xl font-sans mb-1">Hi,</p>
-          <h1 className="font-serif text-[clamp(3rem,6.5vw,5.5rem)] leading-[0.9] tracking-tight text-[var(--foreground)] mb-4">
-            I'm Neto
+          <p className="animate-fade-up text-[var(--muted)] text-xl font-sans mb-1">Hi,</p>
+          <h1
+            className="animate-fade-up font-serif text-[clamp(3rem,6.5vw,5.5rem)] leading-[0.9] tracking-tight text-[var(--foreground)] mb-4"
+            style={{ animationDelay: "60ms" }}
+          >
+            I&apos;m Neto
           </h1>
-          <p className="text-[var(--muted)] text-base mb-6">
+          <p
+            className="animate-fade-up text-[var(--muted)] text-base mb-6"
+            style={{ animationDelay: "110ms" }}
+          >
             Senior Product Designer at{" "}
             <a
               href="https://www.havan.com.br/"
@@ -93,20 +100,26 @@ function Hero() {
             </a>
           </p>
 
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--mint-chip)]/15 mb-7">
+          <div
+            className="animate-fade-up inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--mint-chip)]/15 mb-7"
+            style={{ animationDelay: "155ms" }}
+          >
             <span className="text-[10px] font-semibold tracking-[0.18em] uppercase text-[var(--forest-floor)]">
               Brusque, SC, BR
             </span>
             <span className="text-sm leading-none">🇧🇷</span>
           </div>
 
-          <p className="text-[var(--muted)] text-sm leading-relaxed mb-10 max-w-xs">
+          <p
+            className="animate-fade-up text-[var(--muted)] text-sm leading-relaxed mb-10 max-w-xs"
+            style={{ animationDelay: "200ms" }}
+          >
             Working for 6 years with innovations and process optimization to make the user
             experience the best it can be, currently focusing on e-commerce, service design, and UX
             strategy.
           </p>
 
-          <div className="mb-10">
+          <div className="animate-fade-up mb-10" style={{ animationDelay: "255ms" }}>
             <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[var(--muted)] mb-3">
               Havan
             </p>
@@ -127,7 +140,10 @@ function Hero() {
             </div>
           </div>
 
-          <div className="border-t border-[var(--border)]">
+          <div
+            className="animate-fade-up border-t border-[var(--border)]"
+            style={{ animationDelay: "310ms" }}
+          >
             {[
               {
                 label: "Email",
@@ -159,9 +175,9 @@ function Hero() {
           </div>
         </div>
 
-        {/* Right column */}
-        <div className="flex flex-col gap-3">
-          {/* Photo + Impact metrics — top, correlates with "Hi, I'm Neto" */}
+        {/* Right column — enters as a unit, slightly after left */}
+        <div className="animate-fade-up flex flex-col gap-3" style={{ animationDelay: "90ms" }}>
+          {/* Photo + Impact metrics */}
           <div className="grid grid-cols-[3fr_2fr] gap-3">
             <div className="relative min-h-[220px] overflow-hidden bg-[var(--border)]">
               <Image
@@ -269,12 +285,12 @@ function Projects() {
   const [featured, ...rest] = PROJECTS;
   return (
     <section className="px-6 sm:px-8 pb-32 max-w-5xl mx-auto mt-20">
-      <div className="flex items-center gap-5 mb-14">
+      <ScrollReveal className="flex items-center gap-5 mb-14">
         <span className="text-[var(--muted)] text-[10px] tracking-[0.25em] uppercase shrink-0">
           Selected Work
         </span>
         <div className="flex-1 h-px bg-[var(--border)]" />
-      </div>
+      </ScrollReveal>
 
       <FeaturedCard project={featured} />
 
@@ -283,7 +299,7 @@ function Projects() {
         style={{ backgroundColor: "var(--border)" }}
       >
         {rest.map((project, i) => (
-          <GridCard key={project.slug} project={project} index={i + 2} />
+          <GridCard key={project.slug} project={project} index={i + 2} staggerIndex={i} />
         ))}
       </div>
     </section>
@@ -292,80 +308,95 @@ function Projects() {
 
 function FeaturedCard({ project }: { project: Project }) {
   return (
-    <Link href={`/work/${project.slug}`} className="group block pt-10 sm:pt-14 pb-10 sm:pb-14">
-      <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
-        <div className="flex-1 order-2 lg:order-1 min-w-0">
-          <div className="h-[2px] w-10 mb-6" style={{ backgroundColor: project.accentColor }} />
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-[10px] font-semibold tracking-[0.22em] uppercase text-[var(--coffee-bean)]">
-              {project.label}
-            </span>
-            <span className="text-[var(--muted)] text-xs">01</span>
+    <ScrollReveal>
+      <Link href={`/work/${project.slug}`} className="group block pt-10 sm:pt-14 pb-10 sm:pb-14">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
+          <div className="flex-1 order-2 lg:order-1 min-w-0">
+            <div className="h-[2px] w-10 mb-6" style={{ backgroundColor: project.accentColor }} />
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-[10px] font-semibold tracking-[0.22em] uppercase text-[var(--coffee-bean)]">
+                {project.label}
+              </span>
+              <span className="text-[var(--muted)] text-xs">01</span>
+            </div>
+            <h2 className="font-serif text-[clamp(2rem,4.5vw,3.5rem)] leading-[1] tracking-tight text-[var(--foreground)] mb-5 group-hover:text-black transition-colors duration-200">
+              {project.title}
+            </h2>
+            <p className="text-[var(--muted)] text-sm leading-relaxed max-w-sm mb-7">
+              {project.description}
+            </p>
+            <div className="flex items-center gap-4 text-xs text-[var(--coffee-bean)]">
+              <span>{project.role}</span>
+              <span>-</span>
+              <span>{project.date}</span>
+            </div>
           </div>
-          <h2 className="font-serif text-[clamp(2rem,4.5vw,3.5rem)] leading-[1] tracking-tight text-[var(--foreground)] mb-5 group-hover:text-black transition-colors duration-200">
-            {project.title}
-          </h2>
-          <p className="text-[var(--muted)] text-sm leading-relaxed max-w-sm mb-7">
-            {project.description}
-          </p>
-          <div className="flex items-center gap-4 text-xs text-[var(--coffee-bean)]">
-            <span>{project.role}</span>
-            <span>-</span>
-            <span>{project.date}</span>
-          </div>
-        </div>
 
-        <div className="w-full lg:w-[54%] shrink-0 order-1 lg:order-2 overflow-hidden bg-[var(--border)]">
-          <div className="relative aspect-[16/10] w-full">
-            <Image
-              src={project.thumbnailUrl}
-              alt={project.thumbnailAlt}
-              fill
-              priority
-              className="object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
-              sizes="(max-width: 1024px) 100vw, 54vw"
-            />
+          <div className="w-full lg:w-[54%] shrink-0 order-1 lg:order-2 overflow-hidden bg-[var(--border)]">
+            <div className="relative aspect-[16/10] w-full">
+              <Image
+                src={project.thumbnailUrl}
+                alt={project.thumbnailAlt}
+                fill
+                priority
+                className="object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
+                sizes="(max-width: 1024px) 100vw, 54vw"
+              />
+            </div>
           </div>
         </div>
-      </div>
-    </Link>
+      </Link>
+    </ScrollReveal>
   );
 }
 
-function GridCard({ project, index }: { project: Project; index: number }) {
+function GridCard({
+  project,
+  index,
+  staggerIndex,
+}: {
+  project: Project;
+  index: number;
+  staggerIndex: number;
+}) {
   return (
-    <Link href={`/work/${project.slug}`} className="group block bg-[var(--background)] p-7 sm:p-9">
-      <div className="relative aspect-[16/10] w-full overflow-hidden bg-[var(--border)] mb-6">
-        <Image
-          src={project.thumbnailUrl}
-          alt={project.thumbnailAlt}
-          fill
-          className="object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
-          sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 480px"
-        />
-      </div>
+    <ScrollReveal delay={staggerIndex * 60}>
+      <Link
+        href={`/work/${project.slug}`}
+        className="group block bg-[var(--background)] p-7 sm:p-9"
+      >
+        <div className="relative aspect-[16/10] w-full overflow-hidden bg-[var(--border)] mb-6">
+          <Image
+            src={project.thumbnailUrl}
+            alt={project.thumbnailAlt}
+            fill
+            className="object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
+            sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 480px"
+          />
+        </div>
 
-      <div className="h-[2px] w-8 mb-5" style={{ backgroundColor: project.accentColor }} />
+        <div className="h-[2px] w-8 mb-5" style={{ backgroundColor: project.accentColor }} />
 
-      <div className="flex items-center gap-3 mb-3">
-        <span className="text-[10px] font-semibold tracking-[0.22em] uppercase text-[var(--coffee-bean)]">
-          {project.label}
-        </span>
-        <span className="text-[var(--muted)] text-xs">{String(index).padStart(2, "0")}</span>
-      </div>
+        <div className="flex items-center gap-3 mb-3">
+          <span className="text-[10px] font-semibold tracking-[0.22em] uppercase text-[var(--coffee-bean)]">
+            {project.label}
+          </span>
+          <span className="text-[var(--muted)] text-xs">{String(index).padStart(2, "0")}</span>
+        </div>
 
-      <h3 className="font-serif text-[clamp(1.5rem,2.5vw,2rem)] leading-tight text-[var(--foreground)] mb-3 group-hover:text-black transition-colors duration-200">
-        {project.title}
-      </h3>
+        <h3 className="font-serif text-[clamp(1.5rem,2.5vw,2rem)] leading-tight text-[var(--foreground)] mb-3 group-hover:text-black transition-colors duration-200">
+          {project.title}
+        </h3>
 
-      <p className="text-[var(--muted)] text-sm leading-relaxed mb-5">{project.description}</p>
+        <p className="text-[var(--muted)] text-sm leading-relaxed mb-5">{project.description}</p>
 
-      <div className="flex items-center gap-3 text-xs text-[var(--coffee-bean)]">
-        <span>{project.role}</span>
-        <span>-</span>
-        <span>{project.date}</span>
-      </div>
-    </Link>
+        <div className="flex items-center gap-3 text-xs text-[var(--coffee-bean)]">
+          <span>{project.role}</span>
+          <span>-</span>
+          <span>{project.date}</span>
+        </div>
+      </Link>
+    </ScrollReveal>
   );
 }
 

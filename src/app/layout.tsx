@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Serif_Display, Geist, Geist_Mono } from "next/font/google";
+import { PageIntro } from "@/components/PageIntro";
 import { PostHogProvider } from "@/components/PostHogProvider";
 import "./globals.css";
 
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} ${dmSerifDisplay.variable}`}
     >
       <body className="min-h-screen flex flex-col">
+        <PageIntro />
         <PostHogProvider>{children}</PostHogProvider>
       </body>
     </html>

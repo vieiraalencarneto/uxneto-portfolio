@@ -86,18 +86,35 @@ export default async function CaseStudyPage({ params }: Props) {
       </nav>
 
       <header className="pt-32 pb-12 px-6 max-w-3xl mx-auto">
-        <div className="h-[2px] w-10 mb-6" style={{ backgroundColor: accentColor }} />
-        <p className="text-[10px] font-semibold tracking-[0.2em] uppercase mb-4 text-[var(--coffee-bean)]">
+        <div
+          className="animate-fade-up h-[2px] w-10 mb-6"
+          style={{ backgroundColor: accentColor }}
+        />
+        <p
+          className="animate-fade-up text-[10px] font-semibold tracking-[0.2em] uppercase mb-4 text-[var(--coffee-bean)]"
+          style={{ animationDelay: "60ms" }}
+        >
           {project.label ?? "Case Study"}
         </p>
 
-        <h1 className="font-serif text-3xl sm:text-4xl leading-tight text-[var(--foreground)] mb-6">
+        <h1
+          className="animate-fade-up font-serif text-3xl sm:text-4xl leading-tight text-[var(--foreground)] mb-6"
+          style={{ animationDelay: "110ms" }}
+        >
           {project.title}
         </h1>
 
-        <p className="text-[var(--muted)] text-lg leading-relaxed mb-10">{project.description}</p>
+        <p
+          className="animate-fade-up text-[var(--muted)] text-lg leading-relaxed mb-10"
+          style={{ animationDelay: "170ms" }}
+        >
+          {project.description}
+        </p>
 
-        <div className="flex items-center gap-6 text-xs text-[var(--coffee-bean)] border-t border-[var(--border)] pt-6">
+        <div
+          className="animate-fade-up flex items-center gap-6 text-xs text-[var(--coffee-bean)] border-t border-[var(--border)] pt-6"
+          style={{ animationDelay: "220ms" }}
+        >
           {project.role && <span>{project.role}</span>}
           {project.role && project.date && <span className="text-[var(--border)]">—</span>}
           {project.date && <span>{project.date}</span>}
@@ -105,7 +122,10 @@ export default async function CaseStudyPage({ params }: Props) {
       </header>
 
       {project.thumbnail_url && (
-        <div className="px-6 mb-16 max-w-3xl mx-auto">
+        <div
+          className="animate-fade-up px-6 mb-16 max-w-3xl mx-auto"
+          style={{ animationDelay: "280ms" }}
+        >
           <div className="relative aspect-[16/9] w-full overflow-hidden bg-[var(--border)]">
             <Image
               src={project.thumbnail_url}

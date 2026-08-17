@@ -26,37 +26,52 @@ export default function AboutPage() {
       </nav>
 
       <div className="pt-32 pb-32 px-6 max-w-2xl mx-auto">
-        <p className="text-[#433e3c] text-xs tracking-[0.2em] uppercase mb-10">
+        <p className="animate-fade-up text-[#433e3c] text-xs tracking-[0.2em] uppercase mb-10">
           About
         </p>
 
         <div className="space-y-6">
-          <p className="text-[#f0e7e4] text-xl leading-relaxed font-medium">
-            I began my career in 2015 as a Graphic Designer and have spent the
-            past six years specializing in UI/UX.
+          <p
+            className="animate-fade-up text-[#f0e7e4] text-xl leading-relaxed font-medium"
+            style={{ animationDelay: "60ms" }}
+          >
+            I began my career in 2015 as a Graphic Designer and have spent the past six years
+            specializing in UI/UX.
           </p>
 
-          <p className="text-[#6b6560] text-base leading-relaxed">
-            I&apos;m based in Brusque, Santa Catarina, where I work at
-            Havan&apos;s e-commerce division as a Product Designer. My work
-            focuses on designing and improving digital experiences — from product
-            cards and navigation systems to gift registries and checkout flows.
+          <p
+            className="animate-fade-up text-[#6b6560] text-base leading-relaxed"
+            style={{ animationDelay: "110ms" }}
+          >
+            I&apos;m based in Brusque, Santa Catarina, where I work at Havan&apos;s e-commerce
+            division as a Product Designer. My work focuses on designing and improving digital
+            experiences — from product cards and navigation systems to gift registries and checkout
+            flows.
           </p>
 
-          <p className="text-[#6b6560] text-base leading-relaxed">
-            I approach design through the lens of user research, behavioral
-            data, and business outcomes. Every project starts with a problem
-            worth solving and ends with a measurable result.
+          <p
+            className="animate-fade-up text-[#6b6560] text-base leading-relaxed"
+            style={{ animationDelay: "160ms" }}
+          >
+            I approach design through the lens of user research, behavioral data, and business
+            outcomes. Every project starts with a problem worth solving and ends with a measurable
+            result.
           </p>
 
-          <p className="text-[#6b6560] text-base leading-relaxed">
-            Outside of work, I&apos;m an amateur barista and musician who loves
-            playing bass guitar. As a devoted Beatlemaniac, I collect vinyl
-            records and think everything sounds better on warm-toned speakers.
+          <p
+            className="animate-fade-up text-[#6b6560] text-base leading-relaxed"
+            style={{ animationDelay: "210ms" }}
+          >
+            Outside of work, I&apos;m an amateur barista and musician who loves playing bass guitar.
+            As a devoted Beatlemaniac, I collect vinyl records and think everything sounds better on
+            warm-toned speakers.
           </p>
         </div>
 
-        <div className="mt-14 pt-8 border-t border-[#1a1a1a]">
+        <div
+          className="animate-fade-up mt-14 pt-8 border-t border-[#1a1a1a]"
+          style={{ animationDelay: "280ms" }}
+        >
           <div className="flex flex-col gap-3 text-sm text-[#433e3c]">
             <div className="flex gap-4">
               <span className="w-20 shrink-0 text-[#222]">Location</span>
@@ -82,12 +97,12 @@ export default function AboutPage() {
           </div>
         </div>
 
-        <div className="mt-10">
+        <div className="animate-fade-up mt-10" style={{ animationDelay: "320ms" }}>
           <Link
             href="/"
             className="inline-flex items-center gap-2 text-sm text-[#433e3c] hover:text-[#f0e7e4] transition-colors"
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
               <path
                 d="M11 7H3M6 4L3 7l3 3"
                 stroke="currentColor"
