@@ -1,59 +1,79 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
+import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { LogoMark } from "@/components/Logo";
+import { getT, isLocale } from "@/lib/i18n";
 import { localizeProject, PROJECTS } from "@/lib/projects-static";
 
-const LOCALIZED = PROJECTS.map((p) => localizeProject(p, "en"));
+type Props = { params: Promise<{ locale: string }> };
 
-export default function Home() {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isLocale(locale)) return {};
+  const t = getT(locale);
+  return {
+    title: t.meta.siteTitle,
+    description: t.meta.siteDescription,
+    openGraph: { locale: locale === "pt" ? "pt_BR" : "en_US" },
+  };
+}
+
+export default async function HomePage({ params }: Props) {
+  const { locale } = await params;
+  if (!isLocale(locale)) notFound();
+
+  const t = getT(locale);
+  const projects = PROJECTS.map((p) => localizeProject(p, locale));
+
   return (
     <main className="min-h-screen bg-[var(--background)]">
-      <Nav />
-      <Hero />
-      <Projects />
-      <Footer />
+      <Nav t={t} locale={locale} />
+      <Hero t={t} locale={locale} projects={projects} />
+      <Projects t={t} locale={locale} projects={projects} />
+      <Footer t={t} locale={locale} />
     </main>
   );
 }
 
-function Nav() {
+type Project = ReturnType<typeof localizeProject>;
+
+function Nav({ t, locale }: { t: ReturnType<typeof getT>; locale: string }) {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-[var(--background)]/90 backdrop-blur-md border-b border-[var(--border)]">
       <div className="max-w-5xl mx-auto px-6 sm:px-8 py-4 flex items-center justify-between">
         <Link
-          href="/"
+          href={`/${locale}`}
           className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
           aria-label="Home"
         >
           <LogoMark className="h-11 w-auto shrink-0 text-[var(--foreground)]" />
-          <span className="text-sm font-semibold text-[var(--foreground)]">Product Designer</span>
+          <span className="text-sm font-semibold text-[var(--foreground)]">{t.nav.role}</span>
         </Link>
-        <nav className="flex gap-5 sm:gap-7">
-          <Link
-            href="/work"
-            className="text-[var(--muted)] text-xs uppercase tracking-[0.12em] hover:text-[var(--foreground)] transition-colors duration-200"
-          >
-            Work
-          </Link>
-          <Link
-            href="/about"
-            className="text-[var(--muted)] text-xs uppercase tracking-[0.12em] hover:text-[var(--foreground)] transition-colors duration-200"
-          >
-            About
-          </Link>
-          <a
-            href="mailto:vieiraalencar.neto@gmail.com"
-            className="hidden sm:block text-[var(--muted)] text-xs uppercase tracking-[0.12em] hover:text-[var(--foreground)] transition-colors duration-200"
-          >
-            Contact
-          </a>
-          <a
-            href="/resume.pdf"
-            className="hidden sm:block text-[var(--muted)] text-xs uppercase tracking-[0.12em] hover:text-[var(--foreground)] transition-colors duration-200"
-          >
-            Resume
-          </a>
-        </nav>
+        <div className="flex items-center gap-5 sm:gap-7">
+          <nav className="flex gap-5 sm:gap-7">
+            <Link
+              href={`/${locale}/about`}
+              className="text-[var(--muted)] text-xs uppercase tracking-[0.12em] hover:text-[var(--foreground)] transition-colors duration-200"
+            >
+              {t.nav.about}
+            </Link>
+            <a
+              href="mailto:vieiraalencar.neto@gmail.com"
+              className="hidden sm:block text-[var(--muted)] text-xs uppercase tracking-[0.12em] hover:text-[var(--foreground)] transition-colors duration-200"
+            >
+              {t.nav.contact}
+            </a>
+            <a
+              href="/resume.pdf"
+              className="hidden sm:block text-[var(--muted)] text-xs uppercase tracking-[0.12em] hover:text-[var(--foreground)] transition-colors duration-200"
+            >
+              {t.nav.resume}
+            </a>
+          </nav>
+          <LocaleSwitcher />
+        </div>
       </div>
     </header>
   );
@@ -72,19 +92,27 @@ const SKILLS = [
   "Stakeholder Management",
 ];
 
-function Hero() {
-  const featured = LOCALIZED[0];
+function Hero({
+  t,
+  locale,
+  projects,
+}: {
+  t: ReturnType<typeof getT>;
+  locale: string;
+  projects: Project[];
+}) {
+  const featured = projects[0];
   return (
     <section className="pt-20 pb-0 px-6 sm:px-8 max-w-5xl mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-10 lg:gap-14 items-start pt-12">
         {/* Left column */}
         <div>
-          <p className="text-[var(--muted)] text-xl font-sans mb-1">Hi,</p>
+          <p className="text-[var(--muted)] text-xl font-sans mb-1">{t.hero.greeting}</p>
           <h1 className="font-serif text-[clamp(3rem,6.5vw,5.5rem)] leading-[0.9] tracking-tight text-[var(--foreground)] mb-4">
-            I'm Neto
+            {t.hero.name}
           </h1>
           <p className="text-[var(--muted)] text-base mb-6">
-            Senior Product Designer at{" "}
+            {t.hero.subtitlePrefix}{" "}
             <a
               href="https://www.havan.com.br/"
               target="_blank"
@@ -97,23 +125,21 @@ function Hero() {
 
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--mint-chip)]/15 mb-7">
             <span className="text-[10px] font-semibold tracking-[0.18em] uppercase text-[var(--forest-floor)]">
-              Brusque, SC, BR
+              {t.hero.location}
             </span>
             <span className="text-sm leading-none">🇧🇷</span>
           </div>
 
           <p className="text-[var(--muted)] text-sm leading-relaxed mb-10 max-w-xs">
-            Working for 6 years with innovations and process optimization to make the user
-            experience the best it can be, currently focusing on e-commerce, service design, and UX
-            strategy.
+            {t.hero.description}
           </p>
 
           <div className="mb-10">
             <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[var(--muted)] mb-3">
-              Havan
+              {t.hero.companyLabel}
             </p>
             <p className="text-[var(--muted)] text-sm leading-relaxed mb-2">
-              Work on internal and external products of{" "}
+              {t.hero.companyDesc}{" "}
               <a
                 href="https://www.havan.com.br/"
                 target="_blank"
@@ -125,14 +151,14 @@ function Hero() {
             </p>
             <div className="flex items-center gap-1.5">
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--mint-chip)]" />
-              <span className="text-[var(--muted)] text-xs">Currently working here on Havan</span>
+              <span className="text-[var(--muted)] text-xs">{t.hero.currentRole}</span>
             </div>
           </div>
 
           <div className="border-t border-[var(--border)]">
             {[
               {
-                label: "Email",
+                label: t.nav.contact,
                 href: "mailto:vieiraalencar.neto@gmail.com",
                 external: false,
               },
@@ -141,7 +167,7 @@ function Hero() {
                 href: "https://www.linkedin.com/in/netoalencar/",
                 external: true,
               },
-              { label: "Resume", href: "/resume.pdf", external: false },
+              { label: t.nav.resume, href: "/resume.pdf", external: false },
             ].map(({ label, href, external }) => (
               <a
                 key={label}
@@ -163,7 +189,6 @@ function Hero() {
 
         {/* Right column */}
         <div className="flex flex-col gap-3">
-          {/* Photo + Impact metrics — top, correlates with "Hi, I'm Neto" */}
           <div className="grid grid-cols-[3fr_2fr] gap-3">
             <div className="relative min-h-[220px] overflow-hidden bg-[var(--border)]">
               <Image
@@ -177,46 +202,39 @@ function Hero() {
             </div>
             <div className="border border-[var(--border)] p-4 flex flex-col justify-between">
               <p className="text-[9px] font-semibold tracking-[0.2em] uppercase text-[var(--muted)] mb-4">
-                Impact
+                {t.hero.impact}
               </p>
               <div className="flex flex-col gap-4">
                 <div>
                   <p className="font-serif text-2xl leading-none text-[var(--foreground)] mb-0.5">
                     42%
                   </p>
-                  <p className="text-[10px] text-[var(--muted)] leading-tight">
-                    revenue growth
-                    <br />
-                    Gift List
+                  <p className="text-[10px] text-[var(--muted)] leading-tight whitespace-pre-line">
+                    {t.hero.revenueGrowth}
                   </p>
                 </div>
                 <div>
                   <p className="font-serif text-2xl leading-none text-[var(--foreground)] mb-0.5">
                     +79.5%
                   </p>
-                  <p className="text-[10px] text-[var(--muted)] leading-tight">
-                    more sign-ups
-                    <br />
-                    organic traffic
+                  <p className="text-[10px] text-[var(--muted)] leading-tight whitespace-pre-line">
+                    {t.hero.moreSignups}
                   </p>
                 </div>
                 <div>
                   <p className="font-serif text-2xl leading-none text-[var(--foreground)] mb-0.5">
                     6 yrs
                   </p>
-                  <p className="text-[10px] text-[var(--muted)] leading-tight">
-                    B2B & B2C
-                    <br />
-                    solutions
+                  <p className="text-[10px] text-[var(--muted)] leading-tight whitespace-pre-line">
+                    {t.hero.yearsExp}
                   </p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Featured project card */}
           <Link
-            href={`/work/${featured.slug}`}
+            href={`/${locale}/work/${featured.slug}`}
             className="group block border border-[var(--border)] hover:border-[var(--coffee-bean)] transition-colors duration-300 overflow-hidden"
           >
             <div className="px-4 pt-4 pb-3">
@@ -225,7 +243,7 @@ function Hero() {
                   {featured.label}
                 </span>
                 <span className="text-[9px] font-semibold px-2 py-0.5 bg-[var(--solar-yellow)] text-[var(--obsidian)]">
-                  Featured
+                  {t.hero.featured}
                 </span>
               </div>
               <p className="text-[var(--foreground)] text-xs font-medium leading-snug">
@@ -243,10 +261,9 @@ function Hero() {
             </div>
           </Link>
 
-          {/* Skills */}
           <div className="border border-[var(--border)] p-4">
             <p className="text-[9px] font-semibold tracking-[0.2em] uppercase text-[var(--muted)] mb-3">
-              Skills
+              {t.hero.skills}
             </p>
             <div className="flex flex-wrap gap-1.5">
               {SKILLS.map((skill) => (
@@ -265,36 +282,45 @@ function Hero() {
   );
 }
 
-type Project = (typeof LOCALIZED)[number];
-
-function Projects() {
-  const [featured, ...rest] = LOCALIZED;
+function Projects({
+  t,
+  locale,
+  projects,
+}: {
+  t: ReturnType<typeof getT>;
+  locale: string;
+  projects: Project[];
+}) {
+  const [featured, ...rest] = projects;
   return (
     <section className="px-6 sm:px-8 pb-32 max-w-5xl mx-auto mt-20">
       <div className="flex items-center gap-5 mb-14">
         <span className="text-[var(--muted)] text-[10px] tracking-[0.25em] uppercase shrink-0">
-          Selected Work
+          {t.hero.selectedWork}
         </span>
         <div className="flex-1 h-px bg-[var(--border)]" />
       </div>
 
-      <FeaturedCard project={featured} />
+      <FeaturedCard project={featured} locale={locale} />
 
       <div
         className="mt-px grid grid-cols-1 sm:grid-cols-2 gap-px"
         style={{ backgroundColor: "var(--border)" }}
       >
         {rest.map((project, i) => (
-          <GridCard key={project.slug} project={project} index={i + 2} />
+          <GridCard key={project.slug} project={project} index={i + 2} locale={locale} />
         ))}
       </div>
     </section>
   );
 }
 
-function FeaturedCard({ project }: { project: Project }) {
+function FeaturedCard({ project, locale }: { project: Project; locale: string }) {
   return (
-    <Link href={`/work/${project.slug}`} className="group block pt-10 sm:pt-14 pb-10 sm:pb-14">
+    <Link
+      href={`/${locale}/work/${project.slug}`}
+      className="group block pt-10 sm:pt-14 pb-10 sm:pb-14"
+    >
       <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
         <div className="flex-1 order-2 lg:order-1 min-w-0">
           <div className="h-[2px] w-10 mb-6" style={{ backgroundColor: project.accentColor }} />
@@ -334,9 +360,12 @@ function FeaturedCard({ project }: { project: Project }) {
   );
 }
 
-function GridCard({ project, index }: { project: Project; index: number }) {
+function GridCard({ project, index, locale }: { project: Project; index: number; locale: string }) {
   return (
-    <Link href={`/work/${project.slug}`} className="group block bg-[var(--background)] p-7 sm:p-9">
+    <Link
+      href={`/${locale}/work/${project.slug}`}
+      className="group block bg-[var(--background)] p-7 sm:p-9"
+    >
       <div className="relative aspect-[16/10] w-full overflow-hidden bg-[var(--border)] mb-6">
         <Image
           src={project.thumbnailUrl}
@@ -371,11 +400,11 @@ function GridCard({ project, index }: { project: Project; index: number }) {
   );
 }
 
-function Footer() {
+function Footer({ t, locale }: { t: ReturnType<typeof getT>; locale: string }) {
   return (
     <footer className="border-t border-[var(--border)] px-6 sm:px-8 py-8">
       <div className="max-w-5xl mx-auto flex items-center justify-between">
-        <span className="text-[var(--muted)] text-xs">Brusque, SC, Brazil</span>
+        <span className="text-[var(--muted)] text-xs">{t.footer.location}</span>
         <div className="flex items-center gap-4">
           <a
             href="mailto:vieiraalencar.neto@gmail.com"

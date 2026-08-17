@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Serif_Display, Geist, Geist_Mono } from "next/font/google";
+import { cookies } from "next/headers";
+import { PageIntro } from "@/components/PageIntro";
 import { PostHogProvider } from "@/components/PostHogProvider";
 import "./globals.css";
 
@@ -41,13 +43,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const cookieStore = await cookies();
+  const locale = cookieStore.get("NEXT_LOCALE")?.value === "pt" ? "pt" : "en";
+
   return (
     <html
-      lang="en"
+      lang={locale}
       className={`${geistSans.variable} ${geistMono.variable} ${dmSerifDisplay.variable}`}
     >
       <body className="min-h-screen flex flex-col">
+        <PageIntro />
         <PostHogProvider>{children}</PostHogProvider>
       </body>
     </html>
