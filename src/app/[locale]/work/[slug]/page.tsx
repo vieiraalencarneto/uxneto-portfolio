@@ -72,7 +72,9 @@ export default async function CaseStudyPage({ params }: Props) {
 
   const { data: project } = await getSupabase()
     .from("projects")
-    .select("title, description, label, role, date, thumbnail_url, thumbnail_alt, content_html")
+    .select(
+      "title, description, label, role, date, thumbnail_url, thumbnail_alt, content_html, content_html_pt",
+    )
     .eq("slug", slug)
     .eq("published", true)
     .single();
@@ -143,8 +145,13 @@ export default async function CaseStudyPage({ params }: Props) {
       )}
 
       <div className="px-6 pb-32 max-w-3xl mx-auto">
-        {project.content_html ? (
-          <article className="prose" dangerouslySetInnerHTML={{ __html: project.content_html }} />
+        {(locale === "pt" ? project.content_html_pt : project.content_html) ? (
+          <article
+            className="prose"
+            dangerouslySetInnerHTML={{
+              __html: (locale === "pt" ? project.content_html_pt : project.content_html) ?? "",
+            }}
+          />
         ) : (
           <div className="border border-[var(--border)] p-8 text-center">
             <p className="text-[var(--muted)] text-sm">{t.caseStudy.noContent}</p>
