@@ -20,13 +20,13 @@
  *   - Storage bucket named `case-study-images` created and set to public
  */
 
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { basename, join } from "node:path";
 import { createClient } from "@supabase/supabase-js";
-import { readFileSync, writeFileSync, readdirSync } from "fs";
-import { join, basename } from "path";
 
 const DRY_RUN = process.argv.includes("--dry-run");
 const BUCKET = "case-study-images";
-const FRAMER_ORIGIN = "https://framerusercontent.com";
+const _FRAMER_ORIGIN = "https://framerusercontent.com";
 const CONTENT_DIR = join(process.cwd(), "src/content");
 
 const log = (msg: string) => process.stdout.write(`${msg}\n`);
@@ -44,10 +44,7 @@ type UploadResult =
   | { status: "dry-run"; publicUrl: string }
   | { status: "error"; error: string };
 
-async function getSupabasePublicUrl(
-  supabase: SupabaseAny,
-  path: string,
-): Promise<string> {
+async function getSupabasePublicUrl(supabase: SupabaseAny, path: string): Promise<string> {
   const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
   return data.publicUrl;
 }

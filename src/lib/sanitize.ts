@@ -1,15 +1,28 @@
 import DOMPurify from "isomorphic-dompurify";
 
 const ALLOWED_TAGS = [
-  "h1", "h2", "h3", "h4", "h5",
-  "p", "strong", "em", "b", "i",
-  "ul", "ol", "li",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "p",
+  "strong",
+  "em",
+  "b",
+  "i",
+  "ul",
+  "ol",
+  "li",
   "blockquote",
   "a",
   "img",
-  "br", "hr",
-  "figure", "figcaption",
-  "div", "span",
+  "br",
+  "hr",
+  "figure",
+  "figcaption",
+  "div",
+  "span",
 ];
 
 const ALLOWED_ATTR = ["href", "src", "alt", "title", "width", "height", "target", "rel"];

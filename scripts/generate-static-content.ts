@@ -3,9 +3,9 @@
  * Run: npx tsx scripts/generate-static-content.ts
  */
 
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join, resolve } from "node:path";
 import { parse } from "csv-parse/sync";
-import { readFileSync, writeFileSync, mkdirSync } from "fs";
-import { resolve, join } from "path";
 import { sanitizeHtml } from "../src/lib/sanitize";
 
 const ROOT = resolve(__dirname, "..");
