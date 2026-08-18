@@ -13,7 +13,9 @@
       "!**/node_modules",
       "!**/public",
       "!**/coverage",
-      "!**/playwright-report"
+      "!**/playwright-report",
+      "!**/.agents",
+      "!**/scripts"
     ]
   },
   "formatter": {
@@ -48,5 +50,10 @@
       "trailingCommas": "all",
       "semicolons": "always"
     }
+  },
+  "css": {
+    "parser": { "tailwindDirectives": true },
+    "linter": { "enabled": false },
+    "formatter": { "enabled": false }
   }
 }

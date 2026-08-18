@@ -24,6 +24,7 @@ export const pt: Translations = {
     revenueGrowth: "crescimento em receita\nLista de Presentes",
     moreSignups: "mais cadastros\ntráfego orgânico",
     yearsExp: "soluções\nB2B & B2C",
+    yearsSuffix: " anos",
     skills: "Habilidades",
     featured: "Destaque",
     selectedWork: "Projetos Selecionados",

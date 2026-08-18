@@ -226,7 +226,7 @@ function Hero({
                 </div>
                 <div>
                   <p className="font-serif text-2xl leading-none text-[var(--foreground)] mb-0.5">
-                    <CountUpNumber value={6} suffix=" yrs" delay={240} />
+                    <CountUpNumber value={6} suffix={t.hero.yearsSuffix} delay={240} />
                   </p>
                   <p className="text-[10px] text-[var(--muted)] leading-tight whitespace-pre-line">
                     {t.hero.yearsExp}

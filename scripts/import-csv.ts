@@ -9,10 +9,10 @@
  * Required env: NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
  */
 
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { createClient } from "@supabase/supabase-js";
 import { parse } from "csv-parse/sync";
-import { readFileSync } from "fs";
-import { resolve } from "path";
 import { sanitizeHtml } from "../src/lib/sanitize";
 
 const DRY_RUN = process.argv.includes("--dry-run");
@@ -63,9 +63,7 @@ async function main() {
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !serviceRoleKey) {
-    throw new Error(
-      "Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY env vars",
-    );
+    throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY env vars");
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -97,10 +95,7 @@ async function main() {
     };
 
     if (existing) {
-      const { error } = await supabase
-        .from("projects")
-        .update(payload)
-        .eq("slug", slug);
+      const { error } = await supabase.from("projects").update(payload).eq("slug", slug);
 
       if (error) {
         log(`  ERROR updating ${slug}: ${error.message}`);
