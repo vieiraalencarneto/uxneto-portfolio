@@ -17,6 +17,7 @@ type ProjectData = {
   thumbnail_url: string;
   thumbnail_alt: string;
   content_html: string;
+  content_html_pt: string;
   published: boolean;
   sort_order: number;
 };
@@ -38,6 +39,9 @@ export function ProjectForm({ project, isNew = false }: Props) {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [contentTab, setContentTab] = useState<"en" | "pt">("en");
+  const [translating, setTranslating] = useState(false);
+  const [translateError, setTranslateError] = useState("");
 
   const [form, setForm] = useState<ProjectData>({
     slug: project?.slug ?? "",
@@ -50,6 +54,7 @@ export function ProjectForm({ project, isNew = false }: Props) {
     thumbnail_url: project?.thumbnail_url ?? "",
     thumbnail_alt: project?.thumbnail_alt ?? "",
     content_html: project?.content_html ?? "",
+    content_html_pt: project?.content_html_pt ?? "",
     published: project?.published ?? false,
     sort_order: project?.sort_order ?? 99,
   });
@@ -98,6 +103,34 @@ export function ProjectForm({ project, isNew = false }: Props) {
       startTransition(() => router.push("/admin/projects"));
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleTranslate() {
+    const from = contentTab;
+    const to = contentTab === "en" ? "pt" : "en";
+    const sourceHtml = contentTab === "en" ? form.content_html : form.content_html_pt;
+    if (!sourceHtml) return;
+
+    setTranslating(true);
+    setTranslateError("");
+    try {
+      const res = await fetch("/api/admin/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content_html: sourceHtml, from, to }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setTranslateError(data.error || "Translation failed");
+        return;
+      }
+      set(to === "pt" ? "content_html_pt" : "content_html", data.content_html);
+      setContentTab(to);
+    } catch {
+      setTranslateError("Connection error.");
+    } finally {
+      setTranslating(false);
     }
   }
 
@@ -309,12 +342,54 @@ export function ProjectForm({ project, isNew = false }: Props) {
       />
 
       <div>
-        <p className={label}>Case study content</p>
-        <RichEditor
-          content={form.content_html}
-          onChange={(html) => set("content_html", html)}
-          placeholder="Write the full case study here..."
-        />
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex gap-1">
+            {(["en", "pt"] as const).map((tab) => (
+              <button
+                key={tab}
+                type="button"
+                onClick={() => setContentTab(tab)}
+                className={`text-[10px] font-semibold tracking-[0.15em] uppercase px-3 py-1.5 border transition-colors ${
+                  contentTab === tab
+                    ? "border-[var(--foreground)] bg-[var(--foreground)] text-[var(--background)]"
+                    : "border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)]"
+                }`}
+              >
+                {tab.toUpperCase()}
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={handleTranslate}
+            disabled={
+              translating || !(contentTab === "en" ? form.content_html : form.content_html_pt)
+            }
+            className="text-[10px] font-semibold tracking-[0.1em] uppercase text-[var(--muted)] hover:text-[var(--foreground)] transition-colors disabled:opacity-40"
+          >
+            {translating
+              ? "Traduzindo..."
+              : `Auto-traduzir para ${contentTab === "en" ? "PT" : "EN"}`}
+          </button>
+        </div>
+        {translateError && (
+          <p className="text-[10px] text-[var(--ember-red)] mb-2">{translateError}</p>
+        )}
+        {contentTab === "en" ? (
+          <RichEditor
+            key="content-en"
+            content={form.content_html}
+            onChange={(html) => set("content_html", html)}
+            placeholder="Write the full case study here (English)..."
+          />
+        ) : (
+          <RichEditor
+            key="content-pt"
+            content={form.content_html_pt}
+            onChange={(html) => set("content_html_pt", html)}
+            placeholder="Escreva o case study completo aqui (Portugues)..."
+          />
+        )}
       </div>
     </div>
   );

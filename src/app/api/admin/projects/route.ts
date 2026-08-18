@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
     thumbnail_url,
     thumbnail_alt,
     content_html,
+    content_html_pt,
     published,
     sort_order,
   } = body;
@@ -60,6 +61,7 @@ export async function POST(request: NextRequest) {
       thumbnail_url,
       thumbnail_alt,
       content_html,
+      content_html_pt,
       published: published ?? false,
       sort_order: sort_order ?? 99,
     })

@@ -43,6 +43,7 @@ export async function PATCH(
     thumbnail_url,
     thumbnail_alt,
     content_html,
+    content_html_pt,
     published,
     sort_order,
   } = body;
@@ -59,6 +60,7 @@ export async function PATCH(
       thumbnail_url,
       thumbnail_alt,
       content_html,
+      content_html_pt,
       published,
       sort_order,
       updated_at: new Date().toISOString(),
