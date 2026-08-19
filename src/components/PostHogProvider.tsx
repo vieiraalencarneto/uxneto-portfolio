@@ -4,6 +4,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import posthog from "posthog-js";
 import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
 import { Suspense, useEffect } from "react";
+import { useGeoCapture } from "@/hooks/useGeoCapture";
 
 if (typeof window !== "undefined") {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
@@ -32,27 +33,7 @@ function PostHogPageView() {
     ph.capture("$pageview", { $current_url: url });
   }, [pathname, searchParams, ph]);
 
-  useEffect(() => {
-    if (!navigator.geolocation) return;
-    if (!ph) return;
-    if (sessionStorage.getItem("geo_requested")) return;
-    sessionStorage.setItem("geo_requested", "1");
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        console.log("[geo] captured", pos.coords.latitude, pos.coords.longitude);
-        ph.capture("geo_located", {
-          geo_latitude: pos.coords.latitude,
-          geo_longitude: pos.coords.longitude,
-          geo_accuracy_m: pos.coords.accuracy,
-          $set: {
-            geo_latitude: pos.coords.latitude,
-            geo_longitude: pos.coords.longitude,
-          },
-        });
-      },
-      (err) => console.warn("[geo] denied or error", err.code, err.message),
-    );
-  }, [ph]);
+  useGeoCapture();
 
   return null;
 }
