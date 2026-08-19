@@ -233,12 +233,12 @@ function Hero() {
                 {featured.title}
               </p>
             </div>
-            <div className="relative aspect-[16/9] w-full overflow-hidden bg-[var(--border)]">
+            <div className="relative aspect-[4/3] w-full overflow-hidden bg-[var(--border)]">
               <Image
                 src={featured.thumbnailUrl}
                 alt={featured.thumbnailAlt}
                 fill
-                className="object-cover group-hover:scale-[1.02] transition-transform duration-500"
+                className="object-contain"
                 sizes="480px"
               />
             </div>
@@ -319,13 +319,13 @@ function FeaturedCard({ project }: { project: Project }) {
         </div>
 
         <div className="w-full lg:w-[54%] shrink-0 order-1 lg:order-2 overflow-hidden bg-[var(--border)]">
-          <div className="relative aspect-[16/10] w-full">
+          <div className="relative aspect-[4/3] w-full">
             <Image
               src={project.thumbnailUrl}
               alt={project.thumbnailAlt}
               fill
               priority
-              className="object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
+              className="object-contain opacity-90 group-hover:opacity-100 transition-opacity duration-500"
               sizes="(max-width: 1024px) 100vw, 54vw"
             />
           </div>
@@ -338,12 +338,12 @@ function FeaturedCard({ project }: { project: Project }) {
 function GridCard({ project, index }: { project: Project; index: number }) {
   return (
     <Link href={`/work/${project.slug}`} className="group block bg-[var(--background)] p-7 sm:p-9">
-      <div className="relative aspect-[16/10] w-full overflow-hidden bg-[var(--border)] mb-6">
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-[var(--border)] mb-6">
         <Image
           src={project.thumbnailUrl}
           alt={project.thumbnailAlt}
           fill
-          className="object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
+          className="object-contain opacity-90 group-hover:opacity-100 transition-opacity duration-500"
           sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 480px"
         />
       </div>

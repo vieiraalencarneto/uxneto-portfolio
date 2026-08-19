@@ -130,15 +130,15 @@ export default async function CaseStudyPage({ params }: Props) {
       </header>
 
       {project.thumbnail_url && (
-        <div className="px-6 mb-16 max-w-3xl mx-auto">
-          <div className="relative aspect-[16/9] w-full overflow-hidden bg-[var(--border)]">
+        <div className="px-6 mb-16 max-w-5xl mx-auto">
+          <div className="relative aspect-[4/3] w-full">
             <Image
               src={project.thumbnail_url}
               alt={project.thumbnail_alt ?? title}
               fill
-              className="object-cover"
+              className="object-contain"
               priority
-              sizes="(max-width: 768px) 100vw, 768px"
+              sizes="(max-width: 768px) 100vw, (max-width: 1280px) 80vw, 960px"
             />
           </div>
         </div>
