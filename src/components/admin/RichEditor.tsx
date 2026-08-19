@@ -5,7 +5,7 @@ import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 
 interface Props {
   content: string;
@@ -19,6 +19,8 @@ export function RichEditor({
   placeholder = "Write your content here...",
 }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadError, setUploadError] = useState("");
+  const [uploading, setUploading] = useState(false);
 
   const editor = useEditor({
     extensions: [
@@ -37,16 +39,24 @@ export function RichEditor({
   const uploadImage = useCallback(
     async (file: File) => {
       if (!editor) return;
-      const form = new FormData();
-      form.append("file", file);
-      form.append("bucket", "portfolio");
-      const res = await fetch("/api/admin/upload", { method: "POST", body: form });
-      if (!res.ok) {
-        alert("Upload failed");
-        return;
+      setUploading(true);
+      setUploadError("");
+      try {
+        const form = new FormData();
+        form.append("file", file);
+        form.append("bucket", "portfolio");
+        const res = await fetch("/api/admin/upload", { method: "POST", body: form });
+        const data = await res.json();
+        if (!res.ok) {
+          setUploadError(data.error || "Upload failed");
+          return;
+        }
+        editor.chain().focus().setImage({ src: data.url }).run();
+      } catch {
+        setUploadError("Connection error.");
+      } finally {
+        setUploading(false);
       }
-      const { url } = await res.json();
-      editor.chain().focus().setImage({ src: url }).run();
     },
     [editor],
   );
@@ -59,7 +69,6 @@ export function RichEditor({
 
   return (
     <div className="border border-[var(--border)]">
-      {/* Toolbar */}
       <div className="flex flex-wrap gap-1 p-2 border-b border-[var(--border)] bg-[var(--background)]">
         <button
           type="button"
@@ -119,6 +128,13 @@ export function RichEditor({
         >
           " Quote
         </button>
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().toggleCode().run()}
+          className={`${btn} font-mono ${editor.isActive("code") ? active : ""}`}
+        >
+          {"</>"}
+        </button>
         <span className="w-px bg-[var(--border)] mx-1" />
         <button
           type="button"
@@ -131,8 +147,13 @@ export function RichEditor({
         >
           Link
         </button>
-        <button type="button" onClick={() => fileInputRef.current?.click()} className={btn}>
-          Image
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploading}
+          className={btn}
+        >
+          {uploading ? "..." : "Image"}
         </button>
         <span className="w-px bg-[var(--border)] mx-1" />
         <button
@@ -152,6 +173,12 @@ export function RichEditor({
           Redo
         </button>
       </div>
+
+      {uploadError && (
+        <p className="text-[10px] text-[var(--ember-red)] border-b border-[var(--ember-red)]/30 bg-[var(--ember-red)]/5 px-3 py-1.5">
+          {uploadError}
+        </p>
+      )}
 
       <EditorContent editor={editor} />
 
