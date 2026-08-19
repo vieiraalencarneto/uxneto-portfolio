@@ -380,7 +380,7 @@ function FeaturedCard({ project, locale }: { project: Project; locale: string })
               alt={project.thumbnailAlt}
               fill
               priority
-              className="object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
+              className="object-contain opacity-90 group-hover:opacity-100 transition-opacity duration-500"
               sizes="(max-width: 1024px) 100vw, 54vw"
             />
           </div>
@@ -401,7 +401,7 @@ function GridCard({ project, index, locale }: { project: Project; index: number;
           src={project.thumbnailUrl}
           alt={project.thumbnailAlt}
           fill
-          className="object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
+          className="object-contain opacity-90 group-hover:opacity-100 transition-opacity duration-500"
           sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 480px"
         />
       </div>
