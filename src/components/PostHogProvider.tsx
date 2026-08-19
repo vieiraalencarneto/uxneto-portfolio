@@ -50,7 +50,6 @@ function PostHogPageView() {
         });
       },
       (err) => console.warn("[geo] denied or error", err.code, err.message),
-      { timeout: 8000 },
     );
   }, []);
 
