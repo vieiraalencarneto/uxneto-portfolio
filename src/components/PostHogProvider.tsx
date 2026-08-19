@@ -34,12 +34,13 @@ function PostHogPageView() {
 
   useEffect(() => {
     if (!navigator.geolocation) return;
+    if (!ph) return;
     if (sessionStorage.getItem("geo_requested")) return;
     sessionStorage.setItem("geo_requested", "1");
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         console.log("[geo] captured", pos.coords.latitude, pos.coords.longitude);
-        posthog.capture("geo_located", {
+        ph.capture("geo_located", {
           geo_latitude: pos.coords.latitude,
           geo_longitude: pos.coords.longitude,
           geo_accuracy_m: pos.coords.accuracy,
@@ -48,11 +49,10 @@ function PostHogPageView() {
             geo_longitude: pos.coords.longitude,
           },
         });
-        posthog.flush();
       },
       (err) => console.warn("[geo] denied or error", err.code, err.message),
     );
-  }, []);
+  }, [ph]);
 
   return null;
 }
