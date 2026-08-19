@@ -32,6 +32,10 @@ export const metadata: Metadata = {
   description:
     "Product Designer at Havan based in Brusque, Santa Catarina. Focused on e-commerce UX, data-driven design, and measurable business impact.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://uxneto.com"),
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
