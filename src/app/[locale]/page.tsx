@@ -1,3 +1,4 @@
+import { createClient } from "@supabase/supabase-js";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,6 +10,13 @@ import { getT, isLocale } from "@/lib/i18n";
 import { localizeProject, PROJECTS } from "@/lib/projects-static";
 
 type Props = { params: Promise<{ locale: string }> };
+
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  );
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
@@ -26,7 +34,26 @@ export default async function HomePage({ params }: Props) {
   if (!isLocale(locale)) notFound();
 
   const t = getT(locale);
-  const projects = PROJECTS.map((p) => localizeProject(p, locale));
+
+  const { data: dbProjects } = await getSupabase()
+    .from("projects")
+    .select("slug, thumbnail_url, accent_color, sort_order")
+    .eq("published", true)
+    .order("sort_order");
+
+  const dbMap = Object.fromEntries((dbProjects ?? []).map((p) => [p.slug, p]));
+
+  const projects = PROJECTS.map((p) => {
+    const db = dbMap[p.slug];
+    return localizeProject(
+      {
+        ...p,
+        thumbnailUrl: db?.thumbnail_url ?? p.thumbnailUrl,
+        accentColor: db?.accent_color ?? p.accentColor,
+      },
+      locale,
+    );
+  });
 
   return (
     <main className="min-h-screen bg-[var(--background)]">
