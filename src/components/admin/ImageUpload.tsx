@@ -64,9 +64,18 @@ export function ImageUpload({
         }}
       >
         {value ? (
-          <div className="relative w-full aspect-video">
-            <Image src={value} alt="Preview" fill className="object-cover" />
-          </div>
+          /\.pdf(\?|$)/i.test(value) ? (
+            <div className="flex flex-col items-center gap-1 py-2">
+              <span className="text-2xl">PDF</span>
+              <p className="text-[var(--muted)] text-[10px] break-all max-w-full px-2 text-center">
+                {value.split("/").pop()?.split("?")[0]}
+              </p>
+            </div>
+          ) : (
+            <div className="relative w-full aspect-video">
+              <Image src={value} alt="Preview" fill className="object-cover" />
+            </div>
+          )
         ) : (
           <p className="text-[var(--muted)] text-xs">
             {uploading ? "Uploading..." : "Click or drag file here"}
