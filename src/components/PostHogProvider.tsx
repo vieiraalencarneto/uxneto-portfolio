@@ -12,6 +12,10 @@ if (typeof window !== "undefined") {
     defaults: "2026-05-30",
     person_profiles: "identified_only",
     capture_pageview: false,
+    session_recording: {
+      maskAllInputs: true,
+    },
+    capture_heatmaps: true,
   });
 }
 
