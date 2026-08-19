@@ -373,8 +373,8 @@ function FeaturedCard({ project, locale }: { project: Project; locale: string })
           </div>
         </div>
 
-        <div className="w-full lg:w-[54%] shrink-0 order-1 lg:order-2 overflow-hidden bg-[var(--border)]">
-          <div className="relative aspect-[16/10] w-full">
+        <div className="w-full lg:w-[54%] shrink-0 order-1 lg:order-2">
+          <div className="relative aspect-[4/3] w-full">
             <Image
               src={project.thumbnailUrl}
               alt={project.thumbnailAlt}
@@ -396,7 +396,7 @@ function GridCard({ project, index, locale }: { project: Project; index: number;
       href={`/${locale}/work/${project.slug}`}
       className="group block bg-[var(--background)] p-7 sm:p-9"
     >
-      <div className="relative aspect-[16/10] w-full overflow-hidden bg-[var(--border)] mb-6">
+      <div className="relative aspect-[4/3] w-full mb-6">
         <Image
           src={project.thumbnailUrl}
           alt={project.thumbnailAlt}
