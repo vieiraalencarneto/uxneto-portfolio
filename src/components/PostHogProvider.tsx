@@ -48,6 +48,7 @@ function PostHogPageView() {
             geo_longitude: pos.coords.longitude,
           },
         });
+        posthog.flush();
       },
       (err) => console.warn("[geo] denied or error", err.code, err.message),
     );
