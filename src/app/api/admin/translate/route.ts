@@ -1,15 +1,10 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-const client = new Anthropic();
-
-const LANG_NAMES: Record<string, string> = {
-  en: "English",
-  pt: "Brazilian Portuguese",
-};
+const LANG_MAP: Record<string, string> = { en: "en", pt: "pt-BR" };
+const SEP = " ||| ";
 
 async function requireAuth() {
   const cookieStore = await cookies();
@@ -24,39 +19,75 @@ async function requireAuth() {
   return user;
 }
 
+async function myMemoryTranslate(text: string, from: string, to: string): Promise<string> {
+  const langpair = `${LANG_MAP[from] ?? from}|${LANG_MAP[to] ?? to}`;
+  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${langpair}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("MyMemory request failed");
+  const data = await res.json();
+  if (data.responseStatus !== 200) throw new Error(data.responseDetails ?? "Translation failed");
+  return data.responseData.translatedText as string;
+}
+
+async function translateHtml(html: string, from: string, to: string): Promise<string> {
+  // Extract text nodes between HTML tags, replace with placeholders
+  const segments: string[] = [];
+  const template = html.replace(/>([^<]+)</g, (_match, text: string) => {
+    const trimmed = text.trim();
+    if (!trimmed) return `>${text}<`;
+    const idx = segments.length;
+    segments.push(trimmed);
+    return `>{{${idx}}}<`;
+  });
+
+  if (segments.length === 0) return html;
+
+  // Batch segments up to ~450 chars each to stay within MyMemory limits
+  const translated = new Array<string>(segments.length);
+  let batchText = "";
+  let batchIndices: number[] = [];
+
+  async function flush() {
+    if (!batchIndices.length) return;
+    const result = await myMemoryTranslate(batchText, from, to);
+    const parts = result.split(SEP);
+    batchIndices.forEach((idx, i) => {
+      translated[idx] = parts[i]?.trim() ?? segments[idx];
+    });
+    batchText = "";
+    batchIndices = [];
+  }
+
+  for (let i = 0; i < segments.length; i++) {
+    const addition = batchText ? SEP + segments[i] : segments[i];
+    if (batchText.length + addition.length > 450) {
+      await flush();
+    }
+    batchText = batchText ? batchText + SEP + segments[i] : segments[i];
+    batchIndices.push(i);
+  }
+  await flush();
+
+  return template.replace(
+    /\{\{(\d+)\}\}/g,
+    (_: string, i: string) => translated[Number(i)] ?? segments[Number(i)],
+  );
+}
+
 export async function POST(request: NextRequest) {
   const user = await requireAuth();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { content_html, from, to } = await request.json();
-  if (!content_html || !from || !to || !LANG_NAMES[from] || !LANG_NAMES[to]) {
+  if (!content_html || !from || !to || !LANG_MAP[from] || !LANG_MAP[to]) {
     return NextResponse.json({ error: "content_html, from, and to are required" }, { status: 400 });
   }
 
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return NextResponse.json({ error: "ANTHROPIC_API_KEY not configured" }, { status: 500 });
+  try {
+    const result = await translateHtml(content_html, from, to);
+    return NextResponse.json({ content_html: result });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Translation failed";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
-
-  const message = await client.messages.create({
-    model: "claude-haiku-4-5-20251001",
-    max_tokens: 8192,
-    messages: [
-      {
-        role: "user",
-        content: `Translate the following HTML content from ${LANG_NAMES[from]} to ${LANG_NAMES[to]}.
-
-Rules:
-- Preserve all HTML tags and attributes exactly as-is
-- Only translate the visible text content between tags
-- Do not translate URLs, slugs, code snippets, or proper nouns (tool names, company names, brand names)
-- Output ONLY the translated HTML, no explanation or preamble
-
-HTML:
-${content_html}`,
-      },
-    ],
-  });
-
-  const translated = message.content[0].type === "text" ? message.content[0].text.trim() : "";
-  return NextResponse.json({ content_html: translated });
 }
