@@ -32,6 +32,25 @@ function PostHogPageView() {
     ph.capture("$pageview", { $current_url: url });
   }, [pathname, searchParams, ph]);
 
+  useEffect(() => {
+    if (!ph || !navigator.geolocation) return;
+    if (sessionStorage.getItem("geo_requested")) return;
+    sessionStorage.setItem("geo_requested", "1");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        ph.capture("geo_located", {
+          $set: {
+            geo_latitude: pos.coords.latitude,
+            geo_longitude: pos.coords.longitude,
+            geo_accuracy_m: pos.coords.accuracy,
+          },
+        });
+      },
+      () => {},
+      { timeout: 8000 },
+    );
+  }, [ph]);
+
   return null;
 }
 
