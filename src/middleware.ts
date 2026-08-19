@@ -61,6 +61,7 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/api") ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon") ||
+    pathname.startsWith("/ingest") ||
     /\.(.+)$/.test(pathname) // static files (images, pdf, etc.)
   ) {
     return NextResponse.next();
