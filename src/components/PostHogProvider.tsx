@@ -38,6 +38,7 @@ function PostHogPageView() {
     sessionStorage.setItem("geo_requested", "1");
     navigator.geolocation.getCurrentPosition(
       (pos) => {
+        console.log("[geo] captured", pos.coords.latitude, pos.coords.longitude);
         posthog.capture("geo_located", {
           geo_latitude: pos.coords.latitude,
           geo_longitude: pos.coords.longitude,
@@ -48,7 +49,7 @@ function PostHogPageView() {
           },
         });
       },
-      () => {},
+      (err) => console.warn("[geo] denied or error", err.code, err.message),
       { timeout: 8000 },
     );
   }, []);
