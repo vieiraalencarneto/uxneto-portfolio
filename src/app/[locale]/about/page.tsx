@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { LogoMark } from "@/components/Logo";
+import { TrackableAnchor } from "@/components/TrackableAnchor";
+import { TrackableLink } from "@/components/TrackableLink";
 import { getT, isLocale } from "@/lib/i18n";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -26,34 +27,42 @@ export default async function AboutPage({ params }: Props) {
     <main className="min-h-screen bg-[var(--background)]">
       <header className="fixed top-0 left-0 right-0 z-50 bg-[var(--background)]/90 backdrop-blur-md border-b border-[var(--border)]">
         <div className="max-w-5xl mx-auto px-6 sm:px-8 py-4 flex items-center justify-between">
-          <Link
+          <TrackableLink
             href={`/${locale}`}
             className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
             aria-label="Home"
+            trackingEvent="nav_click"
+            trackingParams={{ element: "logo", page: "about" }}
           >
             <LogoMark className="h-11 w-auto shrink-0 text-[var(--foreground)]" />
             <span className="text-sm font-semibold text-[var(--foreground)]">{t.nav.role}</span>
-          </Link>
+          </TrackableLink>
           <div className="flex items-center gap-5 sm:gap-7">
             <nav className="flex gap-5 sm:gap-7">
-              <Link
+              <TrackableLink
                 href={`/${locale}`}
                 className="text-[var(--muted)] text-xs uppercase tracking-[0.12em] hover:text-[var(--foreground)] transition-colors duration-200"
+                trackingEvent="nav_click"
+                trackingParams={{ element: "work", page: "about" }}
               >
                 {t.nav.work}
-              </Link>
-              <a
+              </TrackableLink>
+              <TrackableAnchor
                 href="mailto:vieiraalencar.neto@gmail.com"
                 className="hidden sm:block text-[var(--muted)] text-xs uppercase tracking-[0.12em] hover:text-[var(--foreground)] transition-colors duration-200"
+                trackingEvent="nav_click"
+                trackingParams={{ element: "contact_email", page: "about" }}
               >
                 {t.nav.contact}
-              </a>
-              <a
+              </TrackableAnchor>
+              <TrackableAnchor
                 href="/resume.pdf"
                 className="hidden sm:block text-[var(--muted)] text-xs uppercase tracking-[0.12em] hover:text-[var(--foreground)] transition-colors duration-200"
+                trackingEvent="nav_click"
+                trackingParams={{ element: "resume", page: "about" }}
               >
                 {t.nav.resume}
-              </a>
+              </TrackableAnchor>
             </nav>
             <LocaleSwitcher />
           </div>
@@ -93,20 +102,23 @@ export default async function AboutPage({ params }: Props) {
             </div>
             <div className="flex gap-4">
               <span className="w-24 shrink-0 text-[var(--border)]">{t.about.emailLabel}</span>
-              <a
+              <TrackableAnchor
                 href="mailto:vieiraalencar.neto@gmail.com"
                 className="hover:text-[var(--foreground)] transition-colors"
+                trackingEvent="cta_click"
+                trackingParams={{ element: "about", label: "email" }}
               >
                 vieiraalencar.neto@gmail.com
-              </a>
+              </TrackableAnchor>
             </div>
           </div>
         </div>
 
         <div className="mt-10">
-          <Link
+          <TrackableLink
             href={`/${locale}`}
             className="inline-flex items-center gap-2 text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+            trackingEvent="about_view_work_click"
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
               <path
@@ -118,19 +130,21 @@ export default async function AboutPage({ params }: Props) {
               />
             </svg>
             {t.about.viewWork}
-          </Link>
+          </TrackableLink>
         </div>
       </div>
 
       <footer className="border-t border-[var(--border)] px-6 sm:px-8 py-8">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <span className="text-[var(--muted)] text-xs">{t.footer.location}</span>
-          <a
+          <TrackableAnchor
             href="mailto:vieiraalencar.neto@gmail.com"
             className="text-[var(--muted)] text-xs hover:text-[var(--foreground)] transition-colors duration-200"
+            trackingEvent="footer_click"
+            trackingParams={{ element: "email", page: "about" }}
           >
             vieiraalencar.neto@gmail.com
-          </a>
+          </TrackableAnchor>
         </div>
       </footer>
     </main>

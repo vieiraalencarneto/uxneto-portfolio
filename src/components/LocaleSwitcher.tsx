@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams, usePathname, useRouter } from "next/navigation";
+import { trackEvent } from "@/lib/analytics";
 
 export function LocaleSwitcher() {
   const params = useParams();
@@ -9,6 +10,7 @@ export function LocaleSwitcher() {
   const current = (params?.locale as string) ?? "en";
 
   function switchTo(locale: string) {
+    trackEvent("locale_switch", { locale, from: current });
     document.cookie = `NEXT_LOCALE=${locale}; path=/; max-age=31536000; SameSite=Lax`;
     const next = pathname.replace(/^\/(en|pt)/, `/${locale}`);
     router.push(next);
