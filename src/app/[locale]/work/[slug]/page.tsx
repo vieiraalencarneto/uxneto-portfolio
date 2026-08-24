@@ -1,10 +1,10 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { LogoMark } from "@/components/Logo";
+import { TrackableLink } from "@/components/TrackableLink";
 import { getT, isLocale } from "@/lib/i18n";
 import { localizeProject, PROJECTS } from "@/lib/projects-static";
 
@@ -92,20 +92,24 @@ export default async function CaseStudyPage({ params }: Props) {
   return (
     <main className="min-h-screen bg-[var(--background)]">
       <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex items-center justify-between bg-[var(--background)]/90 backdrop-blur-md border-b border-[var(--border)]">
-        <Link
+        <TrackableLink
           href={`/${locale}`}
           className="text-[var(--foreground)] hover:opacity-80 transition-opacity"
           aria-label="Home"
+          trackingEvent="nav_click"
+          trackingParams={{ element: "logo", page: "case_study", slug }}
         >
           <LogoMark className="h-11 w-auto shrink-0" />
-        </Link>
+        </TrackableLink>
         <div className="flex items-center gap-4">
-          <Link
+          <TrackableLink
             href={`/${locale}`}
             className="text-[var(--muted)] text-sm hover:text-[var(--foreground)] transition-colors duration-200"
+            trackingEvent="case_study_back_click"
+            trackingParams={{ slug }}
           >
             {t.nav.back}
-          </Link>
+          </TrackableLink>
           <LocaleSwitcher />
         </div>
       </nav>
@@ -168,12 +172,14 @@ export default async function CaseStudyPage({ params }: Props) {
 
       <footer className="border-t border-[var(--border)] px-6 py-8">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
-          <Link
+          <TrackableLink
             href={`/${locale}`}
             className="text-[var(--muted)] text-xs hover:text-[var(--foreground)] transition-colors"
+            trackingEvent="footer_click"
+            trackingParams={{ element: "all_work", slug }}
           >
             {t.nav.allWork}
-          </Link>
+          </TrackableLink>
           <span className="text-[var(--muted)] text-xs">{t.footer.location}</span>
         </div>
       </footer>

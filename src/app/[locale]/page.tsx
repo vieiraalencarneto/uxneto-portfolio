@@ -6,6 +6,8 @@ import { notFound } from "next/navigation";
 import { CountUpNumber } from "@/components/CountUpNumber";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { LogoMark } from "@/components/Logo";
+import { TrackableAnchor } from "@/components/TrackableAnchor";
+import { TrackableLink } from "@/components/TrackableLink";
 import { getT, isLocale } from "@/lib/i18n";
 import { localizeProject, PROJECTS } from "@/lib/projects-static";
 
@@ -71,36 +73,44 @@ function Nav({ t, locale }: { t: ReturnType<typeof getT>; locale: string }) {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-[var(--background)]/90 backdrop-blur-md border-b border-[var(--border)]">
       <div className="max-w-5xl mx-auto px-6 sm:px-8 py-4 flex items-center justify-between">
-        <Link
+        <TrackableLink
           href={`/${locale}`}
           className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
           aria-label="Home"
+          trackingEvent="nav_click"
+          trackingParams={{ element: "logo" }}
         >
           <LogoMark className="h-11 w-auto shrink-0 text-[var(--foreground)]" />
           <span className="text-sm font-semibold text-[var(--foreground)]">{t.nav.role}</span>
-        </Link>
+        </TrackableLink>
         <div className="flex items-center gap-5 sm:gap-7">
           <nav className="flex gap-5 sm:gap-7">
-            <Link
+            <TrackableLink
               href={`/${locale}/about`}
               className="text-[var(--muted)] text-xs uppercase tracking-[0.12em] hover:text-[var(--foreground)] transition-colors duration-200"
+              trackingEvent="nav_click"
+              trackingParams={{ element: "about" }}
             >
               {t.nav.about}
-            </Link>
-            <a
+            </TrackableLink>
+            <TrackableAnchor
               href="mailto:vieiraalencar.neto@gmail.com"
               className="hidden sm:block text-[var(--muted)] text-xs uppercase tracking-[0.12em] hover:text-[var(--foreground)] transition-colors duration-200"
+              trackingEvent="nav_click"
+              trackingParams={{ element: "contact_email" }}
             >
               {t.nav.contact}
-            </a>
-            <a
+            </TrackableAnchor>
+            <TrackableAnchor
               href="/api/resume"
               target="_blank"
               rel="noopener noreferrer"
               className="hidden sm:block text-[var(--muted)] text-xs uppercase tracking-[0.12em] hover:text-[var(--foreground)] transition-colors duration-200"
+              trackingEvent="nav_click"
+              trackingParams={{ element: "resume" }}
             >
               {t.nav.resume}
-            </a>
+            </TrackableAnchor>
           </nav>
           <LocaleSwitcher />
         </div>
@@ -120,6 +130,27 @@ const SKILLS = [
   "User Research",
   "Accessibility",
   "Stakeholder Management",
+];
+
+const HERO_LINKS = (t: ReturnType<typeof getT>) => [
+  {
+    label: t.nav.contact,
+    href: "mailto:vieiraalencar.neto@gmail.com",
+    external: false,
+    tracking: { event: "cta_click", element: "hero", label: "email" },
+  },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/netoalencar/",
+    external: true,
+    tracking: { event: "cta_click", element: "hero", label: "linkedin" },
+  },
+  {
+    label: t.nav.resume,
+    href: "/api/resume",
+    external: true,
+    tracking: { event: "cta_click", element: "hero", label: "resume" },
+  },
 ];
 
 function Hero({
@@ -143,14 +174,16 @@ function Hero({
           </h1>
           <p className="text-[var(--muted)] text-base mb-6">
             {t.hero.subtitlePrefix}{" "}
-            <a
+            <TrackableAnchor
               href="https://www.havan.com.br/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-[var(--foreground)] hover:underline underline-offset-2 transition-colors duration-200"
+              trackingEvent="external_link_click"
+              trackingParams={{ label: "Havan", location: "hero_subtitle" }}
             >
               Havan
-            </a>
+            </TrackableAnchor>
           </p>
 
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--mint-chip)]/15 mb-7">
@@ -170,14 +203,16 @@ function Hero({
             </p>
             <p className="text-[var(--muted)] text-sm leading-relaxed mb-2">
               {t.hero.companyDesc}{" "}
-              <a
+              <TrackableAnchor
                 href="https://www.havan.com.br/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline underline-offset-2 hover:text-[var(--foreground)] transition-colors duration-200"
+                trackingEvent="external_link_click"
+                trackingParams={{ label: "Havan", location: "hero_company" }}
               >
                 Havan
-              </a>
+              </TrackableAnchor>
             </p>
             <div className="flex items-center gap-1.5">
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--mint-chip)]" />
@@ -186,25 +221,15 @@ function Hero({
           </div>
 
           <div className="border-t border-[var(--border)]">
-            {[
-              {
-                label: t.nav.contact,
-                href: "mailto:vieiraalencar.neto@gmail.com",
-                external: false,
-              },
-              {
-                label: "LinkedIn",
-                href: "https://www.linkedin.com/in/netoalencar/",
-                external: true,
-              },
-              { label: t.nav.resume, href: "/api/resume", external: true },
-            ].map(({ label, href, external }) => (
-              <a
+            {HERO_LINKS(t).map(({ label, href, external, tracking }) => (
+              <TrackableAnchor
                 key={label}
                 href={href}
                 target={external ? "_blank" : undefined}
                 rel={external ? "noopener noreferrer" : undefined}
                 className="group flex items-center justify-between py-3.5 border-b border-[var(--border)]"
+                trackingEvent={tracking.event}
+                trackingParams={{ element: tracking.element, label: tracking.label }}
               >
                 <span className="text-[var(--muted)] text-sm group-hover:text-[var(--foreground)] transition-colors duration-200">
                   {label}
@@ -212,7 +237,7 @@ function Hero({
                 <span className="text-[var(--muted)] text-xs group-hover:text-[var(--foreground)] group-hover:translate-x-0.5 transition-all duration-200">
                   →
                 </span>
-              </a>
+              </TrackableAnchor>
             ))}
           </div>
         </div>
@@ -263,9 +288,11 @@ function Hero({
             </div>
           </div>
 
-          <Link
+          <TrackableLink
             href={`/${locale}/work/${featured.slug}`}
             className="group block border border-[var(--border)] hover:border-[var(--coffee-bean)] transition-colors duration-300 overflow-hidden"
+            trackingEvent="project_click"
+            trackingParams={{ slug: featured.slug, title: featured.title, position: "hero_featured" }}
           >
             <div className="px-4 pt-4 pb-3">
               <div className="flex items-center justify-between mb-2">
@@ -289,7 +316,7 @@ function Hero({
                 sizes="480px"
               />
             </div>
-          </Link>
+          </TrackableLink>
 
           <div className="border border-[var(--border)] p-4">
             <p className="text-[9px] font-semibold tracking-[0.2em] uppercase text-[var(--muted)] mb-3">
@@ -347,9 +374,11 @@ function Projects({
 
 function FeaturedCard({ project, locale }: { project: Project; locale: string }) {
   return (
-    <Link
+    <TrackableLink
       href={`/${locale}/work/${project.slug}`}
       className="group block pt-10 sm:pt-14 pb-10 sm:pb-14"
+      trackingEvent="project_click"
+      trackingParams={{ slug: project.slug, title: project.title, position: "featured" }}
     >
       <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
         <div className="flex-1 order-2 lg:order-1 min-w-0">
@@ -386,15 +415,17 @@ function FeaturedCard({ project, locale }: { project: Project; locale: string })
           </div>
         </div>
       </div>
-    </Link>
+    </TrackableLink>
   );
 }
 
 function GridCard({ project, index, locale }: { project: Project; index: number; locale: string }) {
   return (
-    <Link
+    <TrackableLink
       href={`/${locale}/work/${project.slug}`}
       className="group block bg-[var(--background)] p-7 sm:p-9"
+      trackingEvent="project_click"
+      trackingParams={{ slug: project.slug, title: project.title, position: "grid", index }}
     >
       <div className="relative aspect-[4/3] w-full mb-6">
         <Image
@@ -426,7 +457,7 @@ function GridCard({ project, index, locale }: { project: Project; index: number;
         <span>-</span>
         <span>{project.date}</span>
       </div>
-    </Link>
+    </TrackableLink>
   );
 }
 
@@ -436,12 +467,14 @@ function Footer({ t, locale }: { t: ReturnType<typeof getT>; locale: string }) {
       <div className="max-w-5xl mx-auto flex items-center justify-between">
         <span className="text-[var(--muted)] text-xs">{t.footer.location}</span>
         <div className="flex items-center gap-4">
-          <a
+          <TrackableAnchor
             href="mailto:vieiraalencar.neto@gmail.com"
             className="text-[var(--muted)] text-xs hover:text-[var(--foreground)] transition-colors duration-200"
+            trackingEvent="footer_click"
+            trackingParams={{ element: "email" }}
           >
             vieiraalencar.neto@gmail.com
-          </a>
+          </TrackableAnchor>
           <Link
             href="/admin"
             className="text-[var(--border)] hover:text-[var(--muted)] transition-colors duration-200"
